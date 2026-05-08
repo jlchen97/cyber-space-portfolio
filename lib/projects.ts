@@ -12,6 +12,8 @@ export interface ProjectSection {
   body: string;
   /** Optional photo path under /public */
   image?: string;
+  /** If set, renders a "Read full brief →" button that links to /projects/{detailSlug} */
+  detailSlug?: string;
 }
 
 export interface ProjectMetric {
@@ -48,6 +50,8 @@ export interface ProjectEntry {
   tools: string[];
   sections: ProjectSection[];
   metrics: ProjectMetric[];
+  /** If true, the dossier card is omitted from /projects but the detail page still routes */
+  hidden?: boolean;
 }
 
 const HYPERLOOP_DIR = "/images/projects/spacex-hyperloop";
@@ -96,6 +100,7 @@ export const PROJECTS: ProjectEntry[] = [
         body:
           "Stepped into the Washington Hyperloop team as a ground-system engineer. Designed and manufactured a test rig — load cell arm, adapters, frame, and a 'meat slicer' aluminum-disk motor simulator — to gather strain-gauge data on every magnetic system on the pod. Among 1000+ initial competitors and 30 finalists, we were one of the few teams with a working propulsion system: 6th worldwide / 4th in the U.S., with our Halbach-array maglev pushing the pod up to 30 mph.",
         image: `${HYPERLOOP_DIR}/0a5de4_4b89267a12824a64ac9f646949af4f29~mv2.jpg`,
+        detailSlug: "hyperloop-competition-1",
       },
       {
         title: "Competition II — Suspension Dynamics (2017–2018)",
@@ -123,6 +128,70 @@ export const PROJECTS: ProjectEntry[] = [
     ],
   },
 
+  {
+    slug: "hyperloop-competition-1",
+    title: "Hyperloop Competition I",
+    category: "R&D",
+    year: "2016–2017",
+    icon: Rocket,
+    link: "https://cjian1997.wixsite.com/home/hyperloop-competition-1",
+    hidden: true,
+
+    heroImage: `${HYPERLOOP_DIR}/0a5de4_4b89267a12824a64ac9f646949af4f29~mv2.jpg`,
+    description:
+      "First competition season — joined the Washington Hyperloop team as a ground-system engineer. Designed and manufactured the strain-gauge test rig that gathered data on every magnetic system on the pod.",
+    tags: ["MAGLEV", "GROUND_SYSTEMS", "STRAIN_GAUGE"],
+
+    role: "Ground System Engineer",
+    domain: "Aerospace R&D",
+    tagline:
+      "Halbach-array maglev, PEDS, and the swim-or-sink first season.",
+    briefingSummary:
+      "Stepped onto the Washington Hyperloop team as a ground-system engineer responsible for the test rig that gathered strain-gauge data on every magnetic system on the pod. Among 1,000+ initial entrants and 30 finalists, we placed 6th worldwide and 4th in the U.S.",
+    objectives: [
+      "Design + manufacture a strain-gauge test rig for all magnetic systems",
+      "Validate Halbach-array propulsion and PEDS suspension performance",
+      "Support pod readiness for SpaceX competition weekend",
+    ],
+    tools: [
+      "Aluminum 6061-T6",
+      "Strain Gauges",
+      "Load Cells",
+      "SolidWorks",
+      "Halbach Arrays",
+    ],
+    sections: [
+      {
+        title: "Swim or Sink — Joining the Team",
+        body:
+          "I stepped into the Washington Hyperloop team the same way you dive into the ocean: swim or sink, do or die. Joined as a ground-system engineer working on Ground Support Equipment, with one primary mission — design and manufacture a test rig capable of gathering strain-gauge data on every magnetic system on the pod.",
+        image: `${HYPERLOOP_DIR}/0a5de4_4871ab1a232d4432b26cb7433ca07d7e~mv2.jpg`,
+      },
+      {
+        title: "Pod Subsystems — Bogie, PEDS, Lateral Stability",
+        body:
+          "The pod was built around three magnetic systems. The bogie (Mike Barsamian, Isaac Perrin, Isaac Ferrar, CJ Grijalva, Phu Duc, David Coven, Mitchell Frimodt) housed propulsion and braking using Halbach arrays in a C-Channel. The Passive Electro-Dynamic Suspension or PEDS (Mitchell Frimodt + CJ Grijalva) was designed to levitate the pod 1/8\" above the track at ~45 mph. The lateral stability module (Isaac Perrin, Isaac Ferrar, Mike Barsamian) kept the chassis and bogie aligned with the rail.",
+        image: `${HYPERLOOP_DIR}/0a5de4_50ff5fcb81d24a2faa1756a19e18ed30~mv2.jpg`,
+      },
+      {
+        title: "Ground Support Equipment — The Rig",
+        body:
+          "The rig was the deliverable on my desk. Four pieces: a Load Cell Arm holding adapters with strain gauges on four faces; a Load Cell Adapter that accepted different pod components for swap-in testing; a Load Cell Frame in 6061-T6 aluminum providing the structural backbone; and a 'meat slicer' — an aluminum-disk motor-simulation apparatus that let us characterize the magnetic systems before the pod ever saw the track.",
+        image: `${HYPERLOOP_DIR}/0a5de4_dc88f932e6d246bbb838c08125b45303~mv2.jpg`,
+      },
+      {
+        title: "Result — 6th in the World",
+        body:
+          "Out of 1,000+ initial competitors, we made it to the 30 finalists at SpaceX HQ — and were one of the few teams with a working magnetic propulsion system. Our pod hit 30 mph; we placed 6th worldwide and 4th in the United States. Coverage in GeekWire, the Seattle Times, and The Daily UW.",
+        image: `${HYPERLOOP_DIR}/0a5de4_cd56c664a44740caa6162b3889667eaf~mv2.jpg`,
+      },
+    ],
+    metrics: [
+      { value: "6th", label: "WORLD RANK" },
+      { value: "4th US", label: "OF 1,000+ TEAMS" },
+      { value: "30 mph", label: "TOP SPEED ACHIEVED" },
+    ],
+  },
   {
     slug: "apple-design-challenge",
     title: "Apple Design Challenge",

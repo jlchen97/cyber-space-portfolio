@@ -283,6 +283,17 @@ export default async function ProjectBriefPage({
                     {section.body}
                   </p>
                 </div>
+                {section.detailSlug && (
+                  <div className="pl-0 md:pl-12">
+                    <Link
+                      href={`/projects/${section.detailSlug}`}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 border border-primary-fixed-dim/40 font-label-caps text-[11px] tracking-[0.3em] text-primary-fixed-dim hover:bg-primary-fixed-dim hover:text-on-primary transition-colors group/cta"
+                    >
+                      READ FULL BRIEF
+                      <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover/cta:translate-x-0.5 group-hover/cta:-translate-y-0.5" />
+                    </Link>
+                  </div>
+                )}
               </article>
             ))}
 

@@ -104,9 +104,11 @@ export default function ProjectsPage() {
             </div>
           </aside>
 
-          {/* Dossier list */}
+          {/* Dossier list — hidden entries (e.g. individual hyperloop comp pages
+              accessed only from inside the combined SpaceX brief) are filtered
+              out here but their detail routes still resolve. */}
           <div className="lg:w-3/4 space-y-24 md:space-y-32">
-            {PROJECTS.map((project, idx) => {
+            {PROJECTS.filter((p) => !p.hidden).map((project, idx) => {
               const Icon = project.icon;
               const flipped = idx % 2 === 1;
               const num = String(idx + 1).padStart(2, "0");

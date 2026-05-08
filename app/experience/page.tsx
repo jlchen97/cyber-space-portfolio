@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { Globe } from "@/components/ui/cobe-globe";
 import { EXPERIENCE } from "@/lib/experience";
 
 const NAV_LINKS = [
@@ -9,6 +10,54 @@ const NAV_LINKS = [
   { href: "/projects", label: "Projects" },
   { href: "/#contact", label: "Contact" },
 ];
+
+// Real work locations — Seattle is the home base for 5 of 6 roles; the others
+// are sites where Jian was deployed (Tesla's two GigaFactories, Amazon's LAS7
+// Kiva induction).
+const GLOBE_MARKERS = [
+  {
+    id: "seattle",
+    location: [47.6062, -122.3321] as [number, number],
+    label: "Seattle / Home Base",
+  },
+  {
+    id: "fremont",
+    location: [37.5485, -121.9886] as [number, number],
+    label: "Fremont / Tesla GF1",
+  },
+  {
+    id: "shanghai",
+    location: [31.2304, 121.4737] as [number, number],
+    label: "Shanghai / Tesla GF3",
+  },
+  {
+    id: "lasvegas",
+    location: [36.1699, -115.1398] as [number, number],
+    label: "Las Vegas / Amazon LAS7",
+  },
+];
+
+const GLOBE_ARCS = [
+  {
+    id: "sea-fre",
+    from: [47.6062, -122.3321] as [number, number],
+    to: [37.5485, -121.9886] as [number, number],
+    label: "SEA → FRE",
+  },
+  {
+    id: "sea-sha",
+    from: [47.6062, -122.3321] as [number, number],
+    to: [31.2304, 121.4737] as [number, number],
+    label: "SEA → SHA",
+  },
+  {
+    id: "sea-las",
+    from: [47.6062, -122.3321] as [number, number],
+    to: [36.1699, -115.1398] as [number, number],
+    label: "SEA → LAS",
+  },
+];
+
 
 export default function ExperiencePage() {
   return (
@@ -42,22 +91,69 @@ export default function ExperiencePage() {
       </nav>
 
       <main className="pt-32 pb-20 max-w-[1440px] mx-auto px-gutter">
-        {/* Header */}
-        <header className="mb-16 md:mb-20">
-          <div className="flex items-center gap-4 mb-4">
-            <span className="w-2.5 h-2.5 rounded-full bg-primary-fixed-dim animate-pulse" />
-            <span className="font-label-caps text-[12px] text-primary-fixed-dim tracking-[0.4em]">
-              SYSTEMS NOMINAL // ACTIVE DEPLOYMENTS
-            </span>
+        {/* Hero — Mission Log header + Cobe deployment globe */}
+        <header className="mb-16 md:mb-20 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+          <div className="lg:col-span-7 space-y-6">
+            <div className="flex items-center gap-4">
+              <span className="w-2.5 h-2.5 rounded-full bg-primary-fixed-dim animate-pulse" />
+              <span className="font-label-caps text-[12px] text-primary-fixed-dim tracking-[0.4em]">
+                SYSTEMS NOMINAL // ACTIVE DEPLOYMENTS
+              </span>
+            </div>
+            <h1 className="font-display text-5xl md:text-display uppercase tracking-tight">
+              Mission Log
+            </h1>
+            <p className="text-body-lg text-on-surface-variant/80 max-w-2xl">
+              A chronological record of engineering deployments and architectural
+              milestones — from civil infrastructure and consulting through EV
+              propulsion, manufacturing, robotics, and engineering leadership.
+            </p>
+            <div className="grid grid-cols-3 gap-4 pt-6 border-t border-white/5 max-w-md">
+              <div>
+                <div className="font-display text-2xl md:text-3xl text-primary-fixed-dim">
+                  04
+                </div>
+                <div className="font-label-caps text-[10px] tracking-[0.3em] text-on-surface-variant/50 mt-1">
+                  CITIES
+                </div>
+              </div>
+              <div>
+                <div className="font-display text-2xl md:text-3xl text-primary-fixed-dim">
+                  02
+                </div>
+                <div className="font-label-caps text-[10px] tracking-[0.3em] text-on-surface-variant/50 mt-1">
+                  CONTINENTS
+                </div>
+              </div>
+              <div>
+                <div className="font-display text-2xl md:text-3xl text-primary-fixed-dim">
+                  06
+                </div>
+                <div className="font-label-caps text-[10px] tracking-[0.3em] text-on-surface-variant/50 mt-1">
+                  DEPLOYMENTS
+                </div>
+              </div>
+            </div>
           </div>
-          <h1 className="font-display text-5xl md:text-display uppercase tracking-tight mb-4">
-            Mission Log
-          </h1>
-          <p className="text-body-lg text-on-surface-variant/80 max-w-2xl">
-            A chronological record of engineering deployments and architectural
-            milestones — from civil infrastructure and consulting through EV
-            propulsion, manufacturing, robotics, and engineering leadership.
-          </p>
+          <div className="lg:col-span-5 max-w-md mx-auto lg:max-w-none w-full">
+            <Globe
+              markers={GLOBE_MARKERS}
+              arcs={GLOBE_ARCS}
+              dark={1}
+              mapBrightness={6}
+              baseColor={[0.12, 0.12, 0.12]}
+              markerColor={[0, 0.9, 0.22]}
+              arcColor={[0, 0.9, 0.22]}
+              glowColor={[0.05, 0.3, 0.1]}
+              markerSize={0.05}
+              markerElevation={0.02}
+              arcWidth={0.8}
+              arcHeight={0.4}
+            />
+            <p className="text-center font-label-caps text-[10px] tracking-[0.3em] text-on-surface-variant/40 mt-4">
+              SEA HOME BASE / DRAG TO SPIN
+            </p>
+          </div>
         </header>
 
         {/* Mission grid */}
