@@ -10,8 +10,17 @@ import {
 export interface ProjectSection {
   title: string;
   body: string;
-  /** Optional photo path under /public */
+  /** Optional photo path under /public. Ignored if `video` or `images` is set. */
   image?: string;
+  /** Optional gallery — array of photo paths under /public. Renders as a
+   *  responsive grid; takes precedence over `image`. Use for sections that
+   *  showcase multiple assets (e.g. design challenges, photo galleries). */
+  images?: string[];
+  /** CSS `object-position` override for the image (default "50% 25%"). */
+  objectPosition?: string;
+  /** Full YouTube URL or 11-char video ID. When set, renders an embedded
+   *  16:9 YouTube iframe in the section's image slot. */
+  video?: string;
   /** If set, renders a "Read full brief →" button that links to /projects/{detailSlug} */
   detailSlug?: string;
   /** Logical grouping. The detail page renders a divider whenever this changes. */
@@ -38,6 +47,8 @@ export interface ProjectEntry {
   // Dossier card on /projects
   /** Cover photo (matches the project home page card) */
   heroImage?: string;
+  /** Mirror the hero image horizontally (e.g. to point a pod toward a different corner) */
+  heroImageFlipped?: boolean;
   /** 2-sentence dossier card body */
   description: string;
   /** Up to 3 short tags rendered as chips on the card */
@@ -98,18 +109,11 @@ export const PROJECTS: ProjectEntry[] = [
     ],
     sections: [
       {
-        title: "Competition I — Magnetic Propulsion (2016–2017)",
+        title: "Competition IV — Propulsion Integration Engineer (2019–2020)",
         body:
-          "Stepped into the Washington Hyperloop team as a ground-system engineer. Designed and manufactured a test rig — load cell arm, adapters, frame, and a 'meat slicer' aluminum-disk motor simulator — to gather strain-gauge data on every magnetic system on the pod. Among 1000+ initial competitors and 30 finalists, we were one of the few teams with a working propulsion system: 6th worldwide / 4th in the U.S., with our Halbach-array maglev pushing the pod up to 30 mph.",
-        image: `${HYPERLOOP_DIR}/0a5de4_4b89267a12824a64ac9f646949af4f29~mv2.jpg`,
-        detailSlug: "hyperloop-competition-1",
-      },
-      {
-        title: "Competition II — Suspension Dynamics (2017–2018)",
-        body:
-          "Promoted to the suspension team. Designed and led manufacturing of a test rig to validate quarter-car dynamic models built in MATLAB/Simulink, and coordinated with Fox Shox on custom bike-shock specifications. Ran FEA on the swing arm to confirm a minimum 2.0 safety factor under ultimate load. Estimated pod top speed: 120 mph; first sub-team to complete assembly.",
-        image: `${HYPERLOOP_DIR}/0a5de4_556b70c791ca464ea094f621d68f74b0~mv2.jpg`,
-        detailSlug: "hyperloop-competition-2",
+          "Stepped up as Propulsion Integration Engineer. Owned the complete CAD model, designed pneumatic schematics, and merged cross-team systems (notably braking-propulsion line consolidation). Improved hydrostatic pressure and static-fire test processes. Vs. 2018: $3,000+ cost savings, 20%+ weight reduction, 30%+ acceleration increase, 2× test efficiency. Peak thrust: 335 lbf simulated, 300 lbf measured; impulse: 1,051 → 1,270 lbf·s.",
+        image: `${HYPERLOOP_DIR}/0a5de4_fbb9bd42284146dcbc60f2a3eae3f8a9~mv2.jpg`,
+        detailSlug: "hyperloop-competition-4",
       },
       {
         title: "Competition III — Cold Gas Propulsion (2018)",
@@ -119,11 +123,18 @@ export const PROJECTS: ProjectEntry[] = [
         detailSlug: "hyperloop-competition-3",
       },
       {
-        title: "Competition IV — Propulsion Integration Engineer (2019–2020)",
+        title: "Competition II — Suspension Dynamics (2017–2018)",
         body:
-          "Stepped up as Propulsion Integration Engineer. Owned the complete CAD model, designed pneumatic schematics, and merged cross-team systems (notably braking-propulsion line consolidation). Improved hydrostatic pressure and static-fire test processes. Vs. 2018: $3,000+ cost savings, 20%+ weight reduction, 30%+ acceleration increase, 2× test efficiency. Peak thrust: 335 lbf simulated, 300 lbf measured; impulse: 1,051 → 1,270 lbf·s.",
+          "Promoted to the suspension team. Designed and led manufacturing of a test rig to validate quarter-car dynamic models built in MATLAB/Simulink, and coordinated with Fox Shox on custom bike-shock specifications. Ran FEA on the swing arm to confirm a minimum 2.0 safety factor under ultimate load. Estimated pod top speed: 120 mph; first sub-team to complete assembly.",
+        image: `${HYPERLOOP_DIR}/0a5de4_556b70c791ca464ea094f621d68f74b0~mv2.jpg`,
+        detailSlug: "hyperloop-competition-2",
+      },
+      {
+        title: "Competition I — Magnetic Propulsion (2016–2017)",
+        body:
+          "Stepped into the Washington Hyperloop team as a ground-system engineer. Designed and manufactured a test rig — load cell arm, adapters, frame, and a 'meat slicer' aluminum-disk motor simulator — to gather strain-gauge data on every magnetic system on the pod. Among 1000+ initial competitors and 30 finalists, we were one of the few teams with a working propulsion system: 6th worldwide / 4th in the U.S., with our Halbach-array maglev pushing the pod up to 30 mph.",
         image: `${HYPERLOOP_DIR}/0a5de4_4b89267a12824a64ac9f646949af4f29~mv2.jpg`,
-        detailSlug: "hyperloop-competition-4",
+        detailSlug: "hyperloop-competition-1",
       },
     ],
     metrics: [
@@ -327,7 +338,8 @@ export const PROJECTS: ProjectEntry[] = [
     link: "https://cjian1997.wixsite.com/home/hyperloop-competition-3",
     hidden: true,
 
-    heroImage: `${HYPERLOOP_DIR}/0a5de4_5ea136c74e9f461c85bcd57fee3e73ce~mv2.jpg`,
+    heroImage: `${HYPERLOOP_DIR}/0a5de4_19c9902920014a6c9a56ce1faa22f881~mv2.jpg`,
+    heroImageFlipped: true,
     description:
       "Most awarded year. Sole manufacturer of two aluminum 6061 conical cold-gas nozzles. Achieved 30:1 thread safety factor on the Instron. Pod placed 4th worldwide / 1st US and won the SpaceX Innovation Award.",
     tags: ["COLD_GAS", "INNOVATION_AWARD", "PROPULSION"],
@@ -358,19 +370,19 @@ export const PROJECTS: ProjectEntry[] = [
         title: "Propulsion Team Member",
         body:
           "For the third competition, I advanced from the suspension team onto the propulsion team, where I worked alongside two mechanical undergraduate engineers and one aerospace graduate engineer. The propulsion system stores its energy in the form of compressed nitrogen in two large COPVs. When the command is given, the red valves open and gas is released from the two COPVs through a nozzle that accelerates the gas to supersonic speeds. At full pressure, the propulsion system produces 2,805 N of thrust. As a member of the propulsion team, I took charge of designing and manufacturing two aluminum conical nozzles. The nozzles choke the flow of the released nitrogen, accelerating the compressed gas to supersonic speeds, which provides thrust to the pod. The aluminum nozzles are made entirely of aluminum grade 6061. I was the sole contributor in manufacturing both nozzles in-house at the mechanical engineering machine shop.",
-        image: `${HYPERLOOP_DIR}/0a5de4_15ea20d143694455ae9b1f99df711a67~mv2.jpg`,
+        image: `${HYPERLOOP_DIR}/0a5de4_c26ba3aa46e24f0889d2f4956dc2aab0~mv2.jpg`,
       },
       {
         title: "Manufacturing — Lathe + End-Mill",
         body:
           "The nozzles were made primarily on the lathe for the first stage in creating the outer geometry. The nozzle started as a 4\" diameter aluminum rod, and with each pass the cutter would take off no more than 0.002\" of material. The nozzles were then transferred onto the mill for the second stage, where a 15° end mill was used to create the inner geometry. The inner geometry required high precision and a smooth finish for proper flow adhesion. I was the sole contributor in manufacturing both nozzles.",
-        image: `${HYPERLOOP_DIR}/0a5de4_19c9902920014a6c9a56ce1faa22f881~mv2.jpg`,
+        image: `${HYPERLOOP_DIR}/0a5de4_bf20a25ffc4b4ec094258f3b053edb0e~mv2.jpg`,
       },
       {
         title: "Material Testing — Instron + Custom Adapters",
         body:
           "The purpose of using an Instron was to conduct a thread tensile test on the tube-connection side of the nozzle. We had to verify that the threads within the nozzle could withstand the axial compression and tensile loads exerted by the nitrogen during launch. I worked with Professor Bill Kuyendall at the University of Washington on creating custom adapters and jaws for the Instron to properly conduct the test. The test was a success — the part showed no deformation at our max axial force. For fun, we decided to carry the test far beyond our applied loads, until the Instron maxed out at 45 kN. The data showed the threads had a safety factor of 30.",
-        image: `${HYPERLOOP_DIR}/0a5de4_e3b2ec8d2ec647ba9715baea354f762f~mv2.jpg`,
+        image: `${HYPERLOOP_DIR}/0a5de4_208095dc857e4fe5a8511bb0c5bb1a46~mv2.jpg`,
       },
       {
         title: "Finite Element Analysis",
@@ -382,39 +394,39 @@ export const PROJECTS: ProjectEntry[] = [
         title: "Performance Testing — Yakama Farm",
         body:
           "The purpose of testing the propulsion system was to gather data on system performance, ensure everything was working with no leaks (so it would be safe), and provide SpaceX with proof that our system worked when we put our pod in the tube down in Hawthorne that summer. Testing was conducted at a farm in Yakama. The four main tests: low-pressure tests, hydraulic pressure tests, static fire test, and over-pressure fill relief test.",
-        image: `${HYPERLOOP_DIR}/0a5de4_947bc151949a40668aa899c103bf0b99~mv2.jpg`,
+        image: `${HYPERLOOP_DIR}/0a5de4_730d56f459ed420d9c1988b8898b5399~mv2.jpg`,
       },
       // ── What the rest of the team did (full pod overview) ───────
       {
         title: "Pod Overview — Cold Gas Propulsion (Team)",
         body:
           "The cold-gas propulsion module was designed and created by Matthew Lemelin, Derek Wei, Sev Sandomirsky, and myself. The cold-gas thruster accelerates the pod down the track using momentum transfer from the release of compressed nitrogen gas. Energy is stored in the two COPVs and when the red ball valves open, gas is released to the nozzles and choked to supersonic flows.",
-        image: `${HYPERLOOP_DIR}/0a5de4_208095dc857e4fe5a8511bb0c5bb1a46~mv2.jpg`,
+        image: `${HYPERLOOP_DIR}/0a5de4_0d23fd103cf64f9d828b9d66c2ca649d~mv2.jpg`,
       },
       {
         title: "Pod Overview — Vertical & Lateral Stability",
         body:
           "The vertical and lateral stability modules were designed and created by Ian Culhane, Haleh Bahadori, and Daniel Torres. Both modules ensure the pod maintains alignment with the I-beam while traveling down the tube. The vertical stability system utilizes four Fox bike shocks that keep the pod elevated above the subtrack. The lateral stability system keeps the pod aligned side-to-side by clamping onto the web of the I-beam.",
-        image: `${HYPERLOOP_DIR}/0a5de4_d251633ad8f440a4ac75d272cb9d9501~mv2.jpg`,
+        image: `${HYPERLOOP_DIR}/0a5de4_c7851f4641a34586b81ebf3116007415~mv2.jpg`,
       },
       {
         title: "Pod Overview — Carbon Fiber Chassis",
         body:
           "The chassis was designed and created by Ethan Simcock, Brian Maiken, Daisy Zavala, and John Buffalo. The chassis is the main mounting structure for all other subsystems on the pod. It's made of high-modulus T700 carbon-fiber prepreg from Toray and cured in an autoclave. The design was inspired by semi-truck chassis.",
-        image: `${HYPERLOOP_DIR}/0a5de4_bf20a25ffc4b4ec094258f3b053edb0e~mv2.jpg`,
+        image: `${HYPERLOOP_DIR}/0a5de4_25c872885261499db61a30fbd06f7502~mv2.jpg`,
       },
       {
         title: "Pod Overview — Braking",
         body:
           "The braking module was designed and created by Issac Perrin, Joshua Carter, Nicole Lambert, and Peter Sciuto. The team utilized friction braking for this competition rather than magnetic braking — lighter in weight and more predictable. When engaged, the system clamps onto the top flange of the I-beam with its calipers. The system is designed to decelerate the pod from its maximum velocity to a complete stop without causing damage to the pod or sub-track.",
-        image: `${HYPERLOOP_DIR}/0a5de4_c26ba3aa46e24f0889d2f4956dc2aab0~mv2.jpg`,
+        image: `${HYPERLOOP_DIR}/0a5de4_efffcd7f87c34353a3ea416c206b1a04~mv2.jpg`,
       },
       // ── Result ──────────────────────────────────────────────────
       {
         title: "Competition Day — Innovation Award (July 22, 2018)",
         body:
           "Competition date: July 22, 2018. Only four teams were selected to run in the 0.8-mile-long tube. We were the only team equipped with a cold-gas thruster that made it through every check on SpaceX's required checklist — and the only cold-gas thruster running on the final day. Every other team used electric motors as their source of propulsion. Due to time constraints we were unable to fill the propulsion system to its maximum operating pressure of 3,000 psi; at 1,000 psi, we were able to reach over 60 mph. Final placements: 4th in the world, 1st in the United States. Awarded the SpaceX Innovation Award for our decisions and ability to build a working cold-gas thruster. Coverage in GeekWire, UW Aeronautics & Astronautics (\"UW Hyperloop Team Wins Innovation Prize in SpaceX Competition,\" Sept 18, 2018), The Verge, and the Seattle Times (\"UW team notches a personal best in Hyperloop competition and meets Elon Musk\").",
-        image: `${HYPERLOOP_DIR}/0a5de4_730d56f459ed420d9c1988b8898b5399~mv2.jpg`,
+        image: `${HYPERLOOP_DIR}/0a5de4_15ea20d143694455ae9b1f99df711a67~mv2.jpg`,
       },
     ],
     metrics: [
@@ -433,7 +445,8 @@ export const PROJECTS: ProjectEntry[] = [
     link: "https://cjian1997.wixsite.com/home/hyperloop-competition-4",
     hidden: true,
 
-    heroImage: `${HYPERLOOP_DIR}/0a5de4_fbb9bd42284146dcbc60f2a3eae3f8a9~mv2.jpg`,
+    heroImage: `${HYPERLOOP_DIR}/0a5de4_e95265669f8b41b3bd1b531049086b89~mv2.jpg`,
+    heroImageFlipped: true,
     description:
       "Stepped up as Propulsion Integration Engineer for the 2019 cycle. Owned the complete CAD model, designed pneumatic schematics, and merged cross-team systems. Vs. 2018: $3,000+ saved, 20%+ lighter, 30%+ faster, 2× test efficiency.",
     tags: ["PROPULSION", "INTEGRATION", "PNEUMATICS"],
@@ -462,46 +475,65 @@ export const PROJECTS: ProjectEntry[] = [
       {
         title: "Propulsion Integration Engineer",
         body:
-          "For the 2019 competition cycle I stepped up as Propulsion Integration Engineer. The role was four-pronged: manage the entire CAD model for the pod, design the pneumatic schematics from scratch, integrate cross-functional teams (notably merging the braking and propulsion pneumatic lines onto the same supply circuit), and improve overall hydrostatic pressure and static-fire test processes. Vs. the prior year — over $3,000 cost savings, 20%+ weight reduction, 30%+ vehicle acceleration increase, and test process efficiency doubled.",
-        image: `${HYPERLOOP_DIR}/0a5de4_1c3ce5472d6f4d84a4e717c070284e43~mv2.jpg`,
+          "For the 2019 competition cycle I stepped up as Propulsion Integration Engineer. The role had four pieces: manage the entire CAD model for the pod, design the pneumatic schematics, integrate cross-functional teams (notably the braking-propulsion pneumatic line merge), and improve overall hydrostatic pressure and static-fire test processes.",
+        image: `${HYPERLOOP_DIR}/0a5de4_d9ecffeabc074e129cd4c7ae652356e7~mv2.jpg`,
+      },
+      {
+        title: "CAD Ownership + Pneumatic Schematics",
+        body:
+          "Managed the entire pod CAD as the single source of truth for geometry, mass properties, and component packaging across all sub-teams. Designed the pneumatic schematics from scratch — including the manifold that merged the compressed-nitrogen flow into a single supersonic-choked nozzle for the new propulsion package.",
+        image: `${HYPERLOOP_DIR}/0a5de4_bc5d08eeaf584468afbae3a59fbffd39~mv2.jpg`,
+      },
+      {
+        title: "Cross-Functional Integration",
+        body:
+          "Cross-functional integration was the headline work for 2019. Notably: consolidated the braking and propulsion pneumatic lines onto the same supply circuit, captured in the 'Propulsion Pneumatics Schematic with Braking Pneumatics' integration reference. The merged document became the build-and-test source of truth for both sub-teams.",
+        image: `${HYPERLOOP_DIR}/0a5de4_27ef373cbe7b40188fe30e580967fd04~mv2.jpg`,
+        objectPosition: "50% 50%",
+      },
+      {
+        title: "Test Process Improvements",
+        body:
+          "Rewrote the hydrostatic pressure and static-fire test procedures inherited from the 2018 cycle. New sequencing for pressure ramps, instrumentation, and abort criteria made the cycle 2× more efficient — directly enabling the season's headline gains: $3,000+ in cost savings, 20%+ weight reduction, and 30%+ vehicle acceleration increase.",
+        video: "https://www.youtube.com/watch?v=i6palnjG4rk&t=1s",
       },
       // ── What the rest of the team did (full pod overview) ───────
       {
         title: "Pod Overview — Cold Gas Propulsion",
         body:
           "The cold-gas propulsion module was designed by Matthew Lemelin, Gabriel Finertie, Brian Powers, Alex Stenvall, Joshua Yap, and myself. The system accelerates the pod using momentum transfer from compressed nitrogen gas release. Energy storage occurs in two COPVs; when the blue ball valves open, gas reaches the nozzle and achieves supersonic flow. This iteration utilized a manifold merging flowing gas — the combined gas was then accelerated through a single nozzle.",
-        image: `${HYPERLOOP_DIR}/0a5de4_ad52155037744ceeaf5a7a9660289f7c~mv2.jpg`,
+        image: `${HYPERLOOP_DIR}/0a5de4_1b344fc238bf485d9f8285341c56c37f~mv2.jpg`,
       },
       {
         title: "Pod Overview — Vertical & Lateral Stability",
         body:
           "The vertical and lateral stability modules were designed by Peter Sciuto, Emily Whelan, Eric Fan, Laurie Willoughby, and Peter Correa. The stability system maintains pod alignment with the I-beam during transit. Four Fox bike shocks keep the pod elevated above the subtrack (vertical), while the lateral system clamps onto the I-beam web for side-to-side alignment.",
-        image: `${HYPERLOOP_DIR}/0a5de4_d9ecffeabc074e129cd4c7ae652356e7~mv2.jpg`,
+        image: `${HYPERLOOP_DIR}/0a5de4_8a0a3762a4314c3a98a76c6c5e4015d9~mv2.jpg`,
       },
       {
         title: "Pod Overview — Carbon Fiber Chassis",
         body:
           "The chassis was designed by Ethan Simcock, Brian Maiken, Callum Bessinger, Daisy Zabala, Derek Wei, and John Buffalo. This main mounting structure for the subsystems uses high-modulus T700 carbon-fiber prepreg from Toray, cured in an autoclave.",
-        image: `${HYPERLOOP_DIR}/0a5de4_f36ed0ad2ba34ae59a024062e1f1212a~mv2.jpg`,
+        image: `${HYPERLOOP_DIR}/0a5de4_6fc2fb6fbd4d440b9a4fee6f97ab4103~mv2.jpg`,
       },
       {
         title: "Pod Overview — Braking",
         body:
           "The braking module was designed by Ian Culhane, Jackson Torleben, Jessica Craig, Kohya Kato, and Nick North. The team selected friction braking over magnetic braking due to lighter weight and predictability. When engaged, the calipers clamp the I-beam top flange. The system decelerates the pod from maximum velocity to a complete stop without damage.",
-        image: `${HYPERLOOP_DIR}/0a5de4_00c901f085974815ac6a5641aee619e4~mv2.jpg`,
+        image: `${HYPERLOOP_DIR}/0a5de4_ad220f96b1cd48a1ae5eb9844c0f2249~mv2.jpg`,
       },
       {
         title: "Pod Overview — Fairing & Design",
         body:
           "The carbon fiber shell design and layup were created by Ivy Kehoe and Lulu McRoberts, drawing inspiration from Japanese bullet trains and the Tesla Roadster.",
-        image: `${HYPERLOOP_DIR}/0a5de4_e95265669f8b41b3bd1b531049086b89~mv2.jpg`,
+        image: `${HYPERLOOP_DIR}/0a5de4_d6325e7b72404fee8fe62db4387551bc~mv2.jpg`,
       },
       // ── Result ──────────────────────────────────────────────────
       {
         title: "Result — Performance vs. 2018",
         body:
           "Simulation results: peak thrust 335 lbf, impulse 1,051 lbf·s. Test results: peak thrust 300 lbf, impulse 1,270 lbf·s. Compared to the 2018 design: $3,000+ in cost savings, 20%+ weight reduction, 30%+ vehicle acceleration increase, and 2× test efficiency. Coverage in GeekWire (\"Washington Hyperloop slims racing pod, Elon Musk's next contest\") and the Daily UW.",
-        image: `${HYPERLOOP_DIR}/0a5de4_8a0a3762a4314c3a98a76c6c5e4015d9~mv2.jpg`,
+        image: `${HYPERLOOP_DIR}/0a5de4_ad52155037744ceeaf5a7a9660289f7c~mv2.jpg`,
       },
     ],
     metrics: [
@@ -546,6 +578,17 @@ export const PROJECTS: ProjectEntry[] = [
         title: "Design Showcase",
         body:
           "A series of design assets — conceptual interfaces, rendered devices, and interaction sketches — illustrating product paradigms for the next generation of Apple hardware. Visual-first, light on narrative; the work speaks through the imagery.",
+        // First image renders as a full-width featured slide; remainder render
+        // in a 2-column grid below. 68a2d864 = "Overview of Design" — leads.
+        images: [
+          `${APPLE_DIR}/0a5de4_68a2d864c6af4e89a7727a53dd430bbb~mv2.jpg`,
+          `${APPLE_DIR}/0a5de4_5c7e6c66a34c44ea8d9aeb61ccf59d4a~mv2.jpg`,
+          `${APPLE_DIR}/0a5de4_e7949857cc4d4c65b4fe52d5cf7e86a8~mv2.jpg`,
+          `${APPLE_DIR}/0a5de4_529ee9214d904ae1b86a288cc8a0d417~mv2.jpg`,
+          `${APPLE_DIR}/0a5de4_bdfd5f68504149f1a8d5db2c337747c4~mv2.jpg`,
+          `${APPLE_DIR}/0a5de4_e7d17c9d3513417eaf3b7b19a6f2ce05~mv2.jpg`,
+          `${APPLE_DIR}/0a5de4_6e7ee87edad34425829152bac4134de4~mv2.jpg`,
+        ],
       },
     ],
     metrics: [
@@ -583,22 +626,26 @@ export const PROJECTS: ProjectEntry[] = [
       {
         title: "It Started in Sophomore Year",
         body:
-          "Joined the UW chapter of Engineers Without Borders after acceptance into the GIVE volunteer program. The chapter splits across three divisions — Nicaragua, Guatemala, and Local Projects — and I started by contributing to composting toilet infrastructure design for Nicaraguan communities.",
+          "The UW chapter of Engineers Without Borders is an interdisciplinary organization run by UW students, with three divisions: Nicaragua, Guatemala, and Local Projects. I came in via the GIVE volunteering program during my sophomore year — GIVE was the door that opened it: travel to Nicaragua to work in rural villages building eco-friendly infrastructure out of recycled materials. That trip pulled me into the EWB chapter, where I started by contributing to designing and sourcing materials for a composting toilet project serving Nicaraguan communities.",
+        image: `${EWB_DIR}/11062b_f2b95b9a585c465cb32874fde7df77e8~mv2.jpg`,
       },
       {
         title: "Mechanical & Manufacturing Lead",
         body:
-          "After autumn quarter, I was promoted to Mechanical & Manufacturing Lead on the local-projects team building a solar-powered cell phone charging station for the UW campus. Iterated through multiple intermediate designs; the final one was selected for its simplicity and cost efficiency. Dedicated all of spring break to the structural layout.",
+          "After autumn quarter I was assigned as the Mechanical and Manufacturing Lead on the local-projects division — a solar-powered cell phone charging station for the UW campus. The team iterated through multiple intermediate designs; the final one was selected for its simplicity and cost efficiency. I dedicated all of spring break to the structural layout, then developed the manufacturing plan and split workload across the team based on individual machine-shop certifications.",
+        image: `${EWB_DIR}/0a5de4_dd7ee7699e7f498e8e00e68f82038b50~mv2.jpg`,
       },
       {
-        title: "Engineering Discovery Day & Earth Day",
+        title: "Engineering Discovery Day",
         body:
-          "Once design was locked, manufacturing started. I learned to communicate across the team, splitting up the build so every member had a role in the assembly process. The completed prototype was presented during Engineering Discovery Day and Earth Day.",
+          "Once design was locked, manufacturing started. I learned to communicate across the team and assign every member a role in the assembly process. We finished in time to present during Engineering Discovery Day — the first ever solar-powered cell phone charging station built at the University of Washington.",
+        image: `${EWB_DIR}/0a5de4_b021ee29d1a648f09849e95f87d1e75c~mv2.jpg`,
       },
       {
         title: "Reflection",
         body:
-          "EWB sharpened my project-management instincts and gave me a venue to push sustainable-tech awareness. It also reframed engineering for me — from 'build the thing' to 'build the thing because someone needs it'.",
+          "EWB sharpened my project-management instincts and gave me a venue to push sustainable-technology awareness. It also reframed engineering for me — from 'build the thing' to 'build the thing because someone needs it' — and brought that ethic right into the UW community.",
+        image: `${EWB_DIR}/0a5de4_e7c069a05c554174a4d9716f9cca63aa~mv2.jpg`,
       },
     ],
     metrics: [
@@ -634,19 +681,34 @@ export const PROJECTS: ProjectEntry[] = [
     tools: ["Arc Welding", "Engine Rebuild", "Mechanical Design"],
     sections: [
       {
-        title: "It Started With a Childhood Dream",
+        title: "It All Started…",
         body:
-          "Summer before I left for college, I decided to fulfill one of my childhood dreams: building my own go kart. The starting kit: a broken lawnmower from my neighbor and an old non-working four-wheeler from a friend.",
+          "During the summer before I left off for college, I decided to fulfill one of my childhood dreams of building my very own go kart. My project began when I salvaged a broken lawnmower from my neighbor and an old non-working four-wheeler from my friend. I ripped the engine off the lawnmower and stripped every component off the four-wheeler, leaving only the chassis.",
+        image: `${GOKART_DIR}/0a5de4_b39138d7c14547d0bd13092b45e49cbd~mv2.jpg`,
       },
       {
-        title: "The Process",
+        title: "The Engine Rebuild",
         body:
-          "Disassembled and rebuilt the lawnmower engine through trial and error, reorienting it for horizontal drive shaft operation. Designed the chassis on paper, then fabricated it using arc welding on salvaged steel tubing. Lekai Tong helped with fundraising via GoFundMe; his father provided shop access.",
+          "When I first received the lawnmower, the engine was not in working condition — so after taking it off the lawnmower, I disassembled the entire engine block and rebuilt it. The whole rebuilding process was trial and error because I had zero past experience rebuilding engines. After getting a new spark plug, relocating and welding on a new oil flicker, and a stack of other repairs and modifications, I had not only rebuilt the engine but also changed the orientation in which it would run.",
+        image: `${GOKART_DIR}/0a5de4_158f798476544b328f8c197f4ba53fc2~mv2.jpg`,
       },
       {
-        title: "The Result",
+        title: "Reorienting the Drive",
         body:
-          "The finished go kart wasn't the most beautiful thing you've seen at first sight — but it ran, and it was a hell of a learning experience. Total build time: a little over a month, start to first drive.",
+          "The original engine was oriented on its side — pistons moving forward and backward from my perspective — because the shaft connecting to the lawnmower blades was vertical. For my go kart to actually move, I had to reorient the engine so the pistons moved up and down, since the drive shafts on the kart are horizontal.",
+        image: `${GOKART_DIR}/0a5de4_a3f5d67fcc214ddfbfc81b1a38e37cef~mv2.jpg`,
+      },
+      {
+        title: "The Chassis — Pencil to Arc Weld",
+        body:
+          "The second part of the project was creating a custom chassis to mount the rebuilt engine on. I started with a pencil and piece of paper — a few minutes in I had a simple rectangular chassis. Then I took the old four-wheeler's chassis, chopped it into multiple sections, and built up a pile of steel tubing. After salvaging enough metal scraps from the four-wheeler, around my house, and my neighbors', I assembled the chassis by arc-welding all the individual pieces together while following my pencil drawing.",
+        image: `${GOKART_DIR}/0a5de4_2bac6d085b59436a8126a8ad44106c63~mv2.jpg`,
+      },
+      {
+        title: "The Result — Built in a Month",
+        body:
+          "With the help of my friend Lekai Tong — who created a GoFundMe fundraising video — and the support of Lekai's father letting me use his tools, I finished building the go kart in a little over a month. Money from the GoFundMe went toward parts I couldn't salvage: the centrifugal clutch, braking wire, and so on. The finished go kart might not be the most beautiful thing you've seen at first sight, but it sure was a great learning experience.",
+        image: `${GOKART_DIR}/0a5de4_289255894534477cac598cb3cb360127~mv2.jpg`,
       },
     ],
     metrics: [
@@ -685,13 +747,14 @@ export const PROJECTS: ProjectEntry[] = [
       {
         title: "V6 Twin-Turbo Engine",
         body:
-          "Inspired by the Mad Max: Fury Road aesthetic, this engine assembly comprises 45 individual parts and roughly 50 hours of modeling. Components include the engine block, manifold, turbo, crankshaft, piston, and air filter — all rendered as a complete exploded view. Modeled in SolidWorks; available for download on GrabCAD.",
+          "Inspired by the film Mad Max: Fury Road, this engine assembly comprises 45 individual parts and took about 50 hours to complete. Modeled in SolidWorks. The renders break out engine block, manifold, turbo, crankshaft, piston, and air filter as separate parts, plus a complete exploded-view assembly. Model is available for download on GrabCAD.",
         image: `${CAD_DIR}/0a5de4_1a693288a5b542faa5842d0c101cd97f~mv2.jpg`,
       },
       {
         title: "Dragster",
         body:
-          "Built around the V6 engine — a custom chassis with a suspension system inspired by Lamborghini's geometry, but rotated so the shock compresses at an angle rather than horizontally. One shock, one coil, two wishbones connected to the drive shaft. Body and seat work moved into Fusion 360 for the harder organic surfaces.",
+          "The dragster integrates the V6 twin-turbo engine with a custom chassis and suspension system. The suspension is one shock, one coil, and two wishbones connected to the drive shaft — inspired by Lamborghini's geometry, but rotated so the shock compresses at an angle rather than horizontally. Renders break out the suspension, chassis, seat, spoiler, front, and wheel as individual parts, plus a complete exploded-view assembly. Most of the work is in SolidWorks; the seat moved into Fusion 360 for the organic surfacing. Model is available for download on GrabCAD.",
+        image: `${CAD_DIR}/11062b_1143a5a2c2e74ffa8b3748ae2aa2b98f~mv2.jpg`,
       },
     ],
     metrics: [

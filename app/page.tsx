@@ -4,7 +4,6 @@ import {
   ArrowUpRight,
   Download,
   FileText,
-  Cpu,
   Satellite,
 } from "lucide-react";
 
@@ -31,6 +30,7 @@ const RESUME_URL =
   "https://cf9590f3-77e3-40c9-8362-58710c7c207a.filesusr.com/ugd/0a5de4_c4c204ce42aa4aeb8a5142ba84d7dd91.pdf";
 const LINKEDIN_URL = "https://www.linkedin.com/in/jianlchen/";
 const SPLINE_SCENE = "https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode";
+const SPLINE_BRAIN = "https://prod.spline.design/oCgPgJzTzCupWGW2/scene.splinecode";
 
 const NAV_LINKS = [
   { href: "#home", label: "Home" },
@@ -180,71 +180,72 @@ export default function Home() {
       {/* Professional / About */}
       <section
         id="professional"
-        className="anchor-offset py-section-gap max-w-[1440px] mx-auto px-gutter grid grid-cols-12 gap-12 items-center"
+        className="anchor-offset py-section-gap max-w-[1440px] mx-auto px-gutter"
       >
-        <div className="col-span-12 lg:col-span-7 space-y-10">
-          <div className="font-label-caps text-[12px] tracking-[0.5em] text-on-surface-variant/40">
-            PROFESSIONAL_PROFILE
+        {/* Brain hero with text overlaid — title at top of canvas, body at
+            bottom. The brain occupies the middle dead-space of the square. */}
+        <div className="relative w-full aspect-square max-w-5xl mx-auto mb-12 md:mb-16">
+          {/* Brain canvas + watermark cover wrapped together so the brain
+              can be shifted down (away from title, toward description)
+              without breaking the watermark cover position. */}
+          <div className="absolute inset-0 translate-y-12 md:translate-y-16">
+            <div className="absolute inset-0 pointer-events-none">
+              <SplineScene scene={SPLINE_BRAIN} className="w-full h-full" />
+            </div>
+            <div
+              aria-hidden
+              className="absolute bottom-0 right-0 w-[160px] h-[44px] bg-surface z-10"
+            />
           </div>
-          <h2 className="font-display text-4xl md:text-[64px] leading-tight tracking-tighter">
-            Engineering hardware systems that demand{" "}
-            <span className="text-primary-fixed-dim">uncompromising rigor</span>{" "}
-            and ship at industrial scale.
-          </h2>
-          <p className="text-body-lg text-on-surface-variant/80 max-w-2xl">
-            I&rsquo;m a mechanical and robotics engineer with a track record across
-            aerospace, EV manufacturing, marine propulsion, and warehouse
-            automation — from designing precision mechanical assemblies to
-            managing cross-functional engineering programs at fleet scale.
-          </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
-            {[
-              { label: "DOMAIN", value: "ROBOTICS" },
-              { label: "CLEARANCE", value: "FULL_STACK_HW" },
-              { label: "ALMA_MATER", value: "U-DUB" },
-              { label: "STATUS", value: "ACTIVE", green: true },
-            ].map((stat) => (
-              <div
-                key={stat.label}
-                className="space-y-2 cyber-border p-5 glass-panel"
-              >
-                <div className="text-primary-fixed-dim font-label-caps text-[10px] tracking-[0.3em]">
-                  {stat.label}
-                </div>
-                <div
-                  className={`font-display text-2xl ${stat.green ? "text-primary-fixed-dim" : ""}`}
-                >
-                  {stat.value}
-                </div>
-              </div>
-            ))}
+
+          {/* Title overlay — top of the canvas */}
+          <div className="absolute inset-x-0 top-0 text-center px-6 md:px-12 pt-6 md:pt-12 z-10 space-y-4 -translate-y-12 md:-translate-y-16">
+            <div className="font-label-caps text-[12px] tracking-[0.5em] text-on-surface-variant/40">
+              PROFESSIONAL_PROFILE
+            </div>
+            <h2 className="font-display text-3xl md:text-5xl lg:text-6xl leading-tight tracking-tighter max-w-3xl mx-auto">
+              Engineering hardware systems that demand{" "}
+              <span className="text-primary-fixed-dim">
+                uncompromising rigor
+              </span>{" "}
+              and ship at industrial scale.
+            </h2>
+          </div>
+
+          {/* Body overlay — bottom of the canvas */}
+          <div className="absolute inset-x-0 bottom-0 text-center px-6 md:px-12 pb-8 md:pb-16 z-10">
+            <p className="text-body-md md:text-body-lg text-on-surface-variant/80 max-w-2xl mx-auto leading-relaxed">
+              I&rsquo;m a mechanical and robotics engineer with a track record
+              across aerospace, EV manufacturing, marine propulsion, and
+              warehouse automation — from designing precision mechanical
+              assemblies to managing cross-functional engineering programs at
+              fleet scale.
+            </p>
           </div>
         </div>
-        <div className="col-span-12 lg:col-span-5 flex justify-end">
-          <div className="w-full aspect-square max-w-md relative border border-white/10 p-4 bg-surface-container-low">
-            <div className="w-full h-full grid-bg relative overflow-hidden">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <Cpu strokeWidth={1} className="w-40 h-40 text-primary-fixed-dim/30" />
+
+        {/* Stat panels */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+          {[
+            { label: "DOMAIN", value: "ROBOTICS" },
+            { label: "CLEARANCE", value: "FULL_STACK_HW" },
+            { label: "ALMA_MATER", value: "U-DUB" },
+            { label: "STATUS", value: "ACTIVE", green: true },
+          ].map((stat) => (
+            <div
+              key={stat.label}
+              className="space-y-2 cyber-border p-5 glass-panel"
+            >
+              <div className="text-primary-fixed-dim font-label-caps text-[10px] tracking-[0.3em]">
+                {stat.label}
               </div>
-              <div className="absolute top-3 left-3 font-label-caps text-[10px] tracking-[0.3em] text-on-surface-variant/40">
-                UNIT_PRIMARY
-              </div>
-              <div className="absolute top-3 right-3 font-label-caps text-[10px] tracking-[0.3em] text-primary-fixed-dim">
-                ● ONLINE
-              </div>
-              <div className="absolute bottom-3 left-3 font-label-caps text-[10px] tracking-[0.3em] text-on-surface-variant/40">
-                REV / 2026.05
-              </div>
-              <div className="absolute bottom-3 right-3 font-label-caps text-[10px] tracking-[0.3em] text-on-surface-variant/40">
-                SCALE 1:1
+              <div
+                className={`font-display text-2xl ${stat.green ? "text-primary-fixed-dim" : ""}`}
+              >
+                {stat.value}
               </div>
             </div>
-            <div className="absolute -bottom-6 -left-6 glass-panel p-5 border border-white/10">
-              <p className="font-label-caps text-[10px] tracking-[0.3em] text-on-surface-variant">
-                SERIAL_NO: JC-2026-SYS
-              </p>
-            </div>
-          </div>
+          ))}
         </div>
       </section>
 

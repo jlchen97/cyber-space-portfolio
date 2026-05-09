@@ -18,6 +18,43 @@ const GROUP_LABEL: Record<SectionGroup, string> = {
 };
 
 /**
+ * Accepts either a full YouTube URL (watch?v=, youtu.be/, embed/) or a bare
+ * 11-character video ID. Returns the canonical embed URL or null. Honors any
+ * `t=` / `start=` start timestamp (1s, 1m30s, 2h15m, or bare seconds).
+ */
+function youTubeEmbedUrl(input: string): string | null {
+  const trimmed = input.trim();
+  if (!trimmed) return null;
+  if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) {
+    return `https://www.youtube.com/embed/${trimmed}`;
+  }
+  const idMatch = trimmed.match(
+    /(?:youtube\.com\/(?:watch\?v=|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+  );
+  if (!idMatch) return null;
+
+  let startSeconds = 0;
+  const timeMatch = trimmed.match(/[?&](?:t|start)=([0-9hms]+)/);
+  if (timeMatch) {
+    const raw = timeMatch[1];
+    if (/^\d+$/.test(raw)) {
+      startSeconds = parseInt(raw, 10);
+    } else {
+      const h = raw.match(/(\d+)h/);
+      const m = raw.match(/(\d+)m/);
+      const s = raw.match(/(\d+)s/);
+      startSeconds =
+        (h ? parseInt(h[1], 10) * 3600 : 0) +
+        (m ? parseInt(m[1], 10) * 60 : 0) +
+        (s ? parseInt(s[1], 10) : 0);
+    }
+  }
+
+  const base = `https://www.youtube.com/embed/${idMatch[1]}`;
+  return startSeconds > 0 ? `${base}?start=${startSeconds}` : base;
+}
+
+/**
  * Falls back to title patterns when section.group isn't explicitly set.
  * Recognizes the hyperloop section conventions ("Pod Overview — …",
  * "Result — …", "Competition Day").
@@ -123,7 +160,7 @@ export default async function ProjectBriefPage({
                 src={project.heroImage}
                 alt=""
                 aria-hidden
-                className="absolute inset-0 z-0 w-full h-full object-cover brightness-[0.55]"
+                className={`absolute inset-0 z-0 w-full h-full object-cover brightness-[0.55] ${project.heroImageFlipped ? "-scale-x-100" : ""}`}
               />
               <div
                 aria-hidden
@@ -293,26 +330,76 @@ export default async function ProjectBriefPage({
               return (
                 <Fragment key={section.title}>
                   {showDivider && (
-                    <div className="flex items-center gap-3 md:gap-4 -my-4 md:-my-8">
-                      <span className="w-2 h-2 rounded-full bg-primary-fixed-dim animate-pulse shrink-0" />
-                      <span className="font-label-caps text-[11px] tracking-[0.4em] text-primary-fixed-dim shrink-0">
+                    <div className="flex items-center gap-4 md:gap-5 pt-4 pb-6 border-t border-primary-fixed-dim/30">
+                      <span className="w-2.5 h-2.5 rounded-full bg-primary-fixed-dim animate-pulse shrink-0 shadow-[0_0_10px_rgba(0,230,57,0.7)]" />
+                      <span className="font-label-caps text-xs md:text-[13px] tracking-[0.4em] text-primary-fixed-dim shrink-0">
                         {GROUP_LABEL[currGroup]}
                       </span>
-                      <div className="h-px flex-1 bg-gradient-to-r from-primary-fixed-dim/40 to-transparent" />
+                      <div className="h-px flex-1 bg-gradient-to-r from-primary-fixed-dim/50 via-primary-fixed-dim/20 to-transparent" />
                     </div>
                   )}
                   <article className="space-y-6">
-                {section.image && (
+                {section.video ? (
+                  (() => {
+                    const embed = youTubeEmbedUrl(section.video);
+                    return embed ? (
+                      <div className="aspect-video w-full overflow-hidden border border-white/10 bg-black">
+                        <iframe
+                          src={embed}
+                          title={section.title}
+                          className="w-full h-full"
+                          loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          referrerPolicy="strict-origin-when-cross-origin"
+                          allowFullScreen
+                        />
+                      </div>
+                    ) : null;
+                  })()
+                ) : section.images && section.images.length > 0 ? (
+                  <div className="space-y-3 md:space-y-4">
+                    {/* First image: featured, full-width 16:9 */}
+                    <div className="aspect-video w-full overflow-hidden group/img">
+                      <img
+                        src={section.images[0]}
+                        alt={`${section.title} 1`}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-contain transition-transform duration-700 group-hover/img:scale-[1.02]"
+                      />
+                    </div>
+                    {/* Remaining images: 2-column grid */}
+                    {section.images.length > 1 && (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+                        {section.images.slice(1).map((src, i) => (
+                          <div
+                            key={src + i}
+                            className="aspect-[4/3] w-full overflow-hidden group/img"
+                          >
+                            <img
+                              src={src}
+                              alt={`${section.title} ${i + 2}`}
+                              loading="lazy"
+                              decoding="async"
+                              className="w-full h-full object-contain transition-transform duration-700 group-hover/img:scale-[1.02]"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : section.image ? (
                   <div className="aspect-video w-full overflow-hidden border border-white/10 group">
                     <img
                       src={section.image}
                       alt={section.title}
                       loading="lazy"
                       decoding="async"
-                      className="w-full h-full object-cover [object-position:50%_25%] grayscale brightness-90 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700"
+                      className="w-full h-full object-cover grayscale brightness-90 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700"
+                      style={{ objectPosition: section.objectPosition ?? "50% 25%" }}
                     />
                   </div>
-                )}
+                ) : null}
                 <div className="flex items-baseline gap-4">
                   <span className="font-label-caps text-[10px] tracking-[0.3em] text-on-surface-variant/40">
                     {String(sIdx + 1).padStart(2, "0")}
