@@ -7,6 +7,8 @@ interface Marker {
   id: string;
   location: [number, number];
   label: string;
+  /** Optional per-marker color override (RGB normalized 0-1). Falls back to globe `markerColor`. */
+  color?: [number, number, number];
 }
 
 interface Arc {
@@ -150,6 +152,7 @@ export function Globe({
         markers: markers.map((m) => ({
           location: m.location,
           size: markerSize,
+          color: m.color,
           id: m.id,
         })),
         arcs: arcs.map((a) => ({
@@ -275,14 +278,14 @@ export function Globe({
             marginBottom: 8,
             padding: "2px 6px",
             background: "#0e0e0e",
-            color: "#00e639",
+            color: "#e5e2e1",
             fontFamily: "monospace",
             fontSize: "0.6rem",
             letterSpacing: "0.08em",
             textTransform: "uppercase" as const,
             whiteSpace: "nowrap" as const,
             pointerEvents: "none" as const,
-            border: "1px solid rgba(0,230,57,0.4)",
+            border: "1px solid rgba(229,226,225,0.25)",
             opacity: `var(--cobe-visible-${m.id}, 0)`,
             filter: `blur(calc((1 - var(--cobe-visible-${m.id}, 0)) * 8px))`,
             transition: "opacity 0.8s, filter 0.8s",

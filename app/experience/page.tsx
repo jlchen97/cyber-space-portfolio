@@ -11,50 +11,98 @@ const NAV_LINKS = [
   { href: "/#contact", label: "Contact" },
 ];
 
-// Real work locations — Seattle is the home base for 5 of 6 roles; the others
-// are sites where Jian was deployed (Tesla's two GigaFactories, Amazon's LAS7
-// Kiva induction).
+// Color-code by company so the globe reads at a glance. Each company gets a
+// distinct hue; Seattle stays cyber-green as the multi-role home base.
+const COLOR_HOME: [number, number, number] = [0, 0.9, 0.22]; // cyber green
+const COLOR_LEVELUP: [number, number, number] = [0.65, 0.4, 1]; // purple
+const COLOR_TESLA: [number, number, number] = [0.95, 0.25, 0.2]; // red
+const COLOR_AMAZON: [number, number, number] = [1, 0.6, 0.1]; // amber
+
+const SEA: [number, number] = [47.6062, -122.3321];
 const GLOBE_MARKERS = [
+  { id: "seattle", location: SEA, label: "Seattle", color: COLOR_HOME },
   {
-    id: "seattle",
-    location: [47.6062, -122.3321] as [number, number],
-    label: "Seattle / Home Base",
+    id: "redmond",
+    location: [47.674, -122.1215] as [number, number],
+    label: "Redmond",
+    color: COLOR_LEVELUP,
   },
   {
-    id: "fremont",
-    location: [37.5485, -121.9886] as [number, number],
-    label: "Fremont / Tesla GF1",
+    id: "reno",
+    location: [39.5296, -119.8138] as [number, number],
+    label: "Reno",
+    color: COLOR_TESLA,
   },
   {
     id: "shanghai",
     location: [31.2304, 121.4737] as [number, number],
-    label: "Shanghai / Tesla GF3",
+    label: "Shanghai",
+    color: COLOR_TESLA,
   },
   {
     id: "lasvegas",
     location: [36.1699, -115.1398] as [number, number],
-    label: "Las Vegas / Amazon LAS7",
+    label: "Las Vegas",
+    color: COLOR_AMAZON,
+  },
+  {
+    id: "nyc",
+    location: [40.7128, -74.006] as [number, number],
+    label: "New York",
+    color: COLOR_AMAZON,
+  },
+  {
+    id: "miami",
+    location: [25.7617, -80.1918] as [number, number],
+    label: "Miami",
+    color: COLOR_AMAZON,
+  },
+  {
+    id: "austin",
+    location: [30.2672, -97.7431] as [number, number],
+    label: "Austin",
+    color: COLOR_AMAZON,
+  },
+  {
+    id: "chicago",
+    location: [41.8781, -87.6298] as [number, number],
+    label: "Chicago",
+    color: COLOR_AMAZON,
+  },
+  {
+    id: "sandiego",
+    location: [32.7157, -117.1611] as [number, number],
+    label: "San Diego",
+    color: COLOR_AMAZON,
   },
 ];
 
+// Arcs are drawn but left unlabeled — the chips were piling up over North
+// America. The line itself conveys the deployment trajectory.
 const GLOBE_ARCS = [
+  { id: "sea-reno", from: SEA, to: [39.5296, -119.8138] as [number, number] },
+  { id: "sea-sha", from: SEA, to: [31.2304, 121.4737] as [number, number] },
+  { id: "sea-las", from: SEA, to: [36.1699, -115.1398] as [number, number] },
+  { id: "sea-nyc", from: SEA, to: [40.7128, -74.006] as [number, number] },
+  { id: "sea-miami", from: SEA, to: [25.7617, -80.1918] as [number, number] },
+  { id: "sea-austin", from: SEA, to: [30.2672, -97.7431] as [number, number] },
+  { id: "sea-chicago", from: SEA, to: [41.8781, -87.6298] as [number, number] },
   {
-    id: "sea-fre",
-    from: [47.6062, -122.3321] as [number, number],
-    to: [37.5485, -121.9886] as [number, number],
-    label: "SEA → FRE",
+    id: "sea-sandiego",
+    from: SEA,
+    to: [32.7157, -117.1611] as [number, number],
   },
+];
+
+// Legend rendered below the globe — maps colors → companies.
+const GLOBE_LEGEND = [
+  { color: "#00e63a", label: "Home Base", note: "Seattle (4 roles)" },
+  { color: "#a766ff", label: "Level Up Live", note: "Redmond" },
+  { color: "#f24033", label: "Tesla", note: "Reno · Shanghai" },
   {
-    id: "sea-sha",
-    from: [47.6062, -122.3321] as [number, number],
-    to: [31.2304, 121.4737] as [number, number],
-    label: "SEA → SHA",
-  },
-  {
-    id: "sea-las",
-    from: [47.6062, -122.3321] as [number, number],
-    to: [36.1699, -115.1398] as [number, number],
-    label: "SEA → LAS",
+    color: "#ff9919",
+    label: "Amazon",
+    note: "Las Vegas · NYC · Miami · Austin · Chicago · San Diego",
   },
 ];
 
@@ -111,7 +159,7 @@ export default function ExperiencePage() {
             <div className="grid grid-cols-3 gap-4 pt-6 border-t border-white/5 max-w-md">
               <div>
                 <div className="font-display text-2xl md:text-3xl text-primary-fixed-dim">
-                  04
+                  10
                 </div>
                 <div className="font-label-caps text-[10px] tracking-[0.3em] text-on-surface-variant/50 mt-1">
                   CITIES
@@ -150,8 +198,31 @@ export default function ExperiencePage() {
               arcWidth={0.8}
               arcHeight={0.4}
             />
-            <p className="text-center font-label-caps text-[10px] tracking-[0.3em] text-on-surface-variant/40 mt-4">
-              SEA HOME BASE / DRAG TO SPIN
+            <ul className="mt-6 space-y-2.5">
+              {GLOBE_LEGEND.map((item) => (
+                <li
+                  key={item.label}
+                  className="flex items-center gap-3 text-[12px]"
+                >
+                  <span
+                    aria-hidden
+                    className="w-2.5 h-2.5 rounded-full shrink-0"
+                    style={{
+                      backgroundColor: item.color,
+                      boxShadow: `0 0 8px ${item.color}80`,
+                    }}
+                  />
+                  <span className="font-label-caps text-[11px] tracking-[0.2em] text-on-surface w-[120px] shrink-0">
+                    {item.label}
+                  </span>
+                  <span className="text-on-surface-variant/60 text-[12px] truncate">
+                    {item.note}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <p className="text-center font-label-caps text-[10px] tracking-[0.3em] text-on-surface-variant/30 mt-6">
+              DRAG TO SPIN
             </p>
           </div>
         </header>

@@ -1,8 +1,38 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Fragment } from "react";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 
-import { PROJECTS, getProjectBySlug } from "@/lib/projects";
+import {
+  PROJECTS,
+  getProjectBySlug,
+  type ProjectSection,
+} from "@/lib/projects";
+
+type SectionGroup = "my-work" | "pod-overview" | "result";
+
+const GROUP_LABEL: Record<SectionGroup, string> = {
+  "my-work": "MY CONTRIBUTION",
+  "pod-overview": "POD OVERVIEW — TEAM",
+  result: "RESULT",
+};
+
+/**
+ * Falls back to title patterns when section.group isn't explicitly set.
+ * Recognizes the hyperloop section conventions ("Pod Overview — …",
+ * "Result — …", "Competition Day").
+ */
+function inferGroup(section: ProjectSection): SectionGroup {
+  if (section.group) return section.group;
+  if (section.title.startsWith("Pod Overview")) return "pod-overview";
+  if (
+    section.title.startsWith("Result") ||
+    section.title.startsWith("Competition Day")
+  ) {
+    return "result";
+  }
+  return "my-work";
+}
 
 const NAV_LINKS = [
   { href: "/#home", label: "Home" },
@@ -254,8 +284,24 @@ export default async function ProjectBriefPage({
               02 // OPERATIONS
             </h3>
 
-            {project.sections.map((section, sIdx) => (
-              <article key={section.title} className="space-y-6">
+            {project.sections.map((section, sIdx) => {
+              const currGroup = inferGroup(section);
+              const prevGroup =
+                sIdx > 0 ? inferGroup(project.sections[sIdx - 1]) : null;
+              const showDivider = sIdx > 0 && currGroup !== prevGroup;
+
+              return (
+                <Fragment key={section.title}>
+                  {showDivider && (
+                    <div className="flex items-center gap-3 md:gap-4 -my-4 md:-my-8">
+                      <span className="w-2 h-2 rounded-full bg-primary-fixed-dim animate-pulse shrink-0" />
+                      <span className="font-label-caps text-[11px] tracking-[0.4em] text-primary-fixed-dim shrink-0">
+                        {GROUP_LABEL[currGroup]}
+                      </span>
+                      <div className="h-px flex-1 bg-gradient-to-r from-primary-fixed-dim/40 to-transparent" />
+                    </div>
+                  )}
+                  <article className="space-y-6">
                 {section.image && (
                   <div className="aspect-video w-full overflow-hidden border border-white/10 group">
                     <img
@@ -294,8 +340,10 @@ export default async function ProjectBriefPage({
                     </Link>
                   </div>
                 )}
-              </article>
-            ))}
+                  </article>
+                </Fragment>
+              );
+            })}
 
             {/* Metrics row */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 py-12 border-y border-white/5">

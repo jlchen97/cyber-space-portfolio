@@ -50,7 +50,7 @@ export const EXPERIENCE: ExperienceEntry[] = [
     slug: "level-up-live",
     company: "Level Up Live",
     role: "Chief Operating Officer",
-    location: "SEATTLE / WA",
+    location: "REDMOND / WA",
     icon: Terminal,
     summary: "Driving operations across a live, real-time platform.",
     objectives: [
@@ -213,7 +213,7 @@ export const EXPERIENCE: ExperienceEntry[] = [
     slug: "tesla",
     company: "Tesla",
     role: "Material Flow Automation Intern",
-    location: "FREMONT / CA",
+    location: "RENO / NV",
     icon: Factory,
     summary: "Engineering automated material flow for production.",
     objectives: [
@@ -228,7 +228,7 @@ export const EXPERIENCE: ExperienceEntry[] = [
     domain: "Manufacturing Automation",
     duration: "Co-op Cycle",
     briefingSummary:
-      "Worked across GigaFactory 1 (Fremont) and GigaFactory 3 (Shanghai) on AGV deployment, PLC controls, and the SCADA/HMI surfaces that monitored Model 3 production flow.",
+      "Worked across GigaFactory 1 (Reno, NV) and GigaFactory 3 (Shanghai) on AGV deployment, PLC controls, and the SCADA/HMI surfaces that monitored Model 3 production flow.",
     sections: [
       {
         title: "Automation Controls @ GF1",
