@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Fragment } from "react";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
@@ -156,11 +157,14 @@ export default async function ProjectBriefPage({
         <section className="relative min-h-[640px] md:min-h-[720px] flex flex-col justify-end max-w-[1440px] mx-auto px-gutter pb-16 md:pb-20 overflow-hidden">
           {project.heroImage ? (
             <>
-              <img
+              <Image
                 src={project.heroImage}
                 alt=""
                 aria-hidden
-                className={`absolute inset-0 z-0 w-full h-full object-cover brightness-[0.55] ${project.heroImageFlipped ? "-scale-x-100" : ""}`}
+                fill
+                priority
+                sizes="100vw"
+                className={`absolute inset-0 z-0 object-cover brightness-[0.55] ${project.heroImageFlipped ? "-scale-x-100" : ""}`}
               />
               <div
                 aria-hidden
@@ -359,13 +363,13 @@ export default async function ProjectBriefPage({
                 ) : section.images && section.images.length > 0 ? (
                   <div className="space-y-3 md:space-y-4">
                     {/* First image: featured, full-width 16:9 */}
-                    <div className="aspect-video w-full overflow-hidden group/img">
-                      <img
+                    <div className="relative aspect-video w-full overflow-hidden group/img">
+                      <Image
                         src={section.images[0]}
                         alt={`${section.title} 1`}
-                        loading="lazy"
-                        decoding="async"
-                        className="w-full h-full object-contain transition-transform duration-700 group-hover/img:scale-[1.02]"
+                        fill
+                        sizes="(min-width: 768px) 66vw, 100vw"
+                        className="object-contain transition-transform duration-700 group-hover/img:scale-[1.02]"
                       />
                     </div>
                     {/* Remaining images: 2-column grid */}
@@ -374,14 +378,14 @@ export default async function ProjectBriefPage({
                         {section.images.slice(1).map((src, i) => (
                           <div
                             key={src + i}
-                            className="aspect-[4/3] w-full overflow-hidden group/img"
+                            className="relative aspect-[4/3] w-full overflow-hidden group/img"
                           >
-                            <img
+                            <Image
                               src={src}
                               alt={`${section.title} ${i + 2}`}
-                              loading="lazy"
-                              decoding="async"
-                              className="w-full h-full object-contain transition-transform duration-700 group-hover/img:scale-[1.02]"
+                              fill
+                              sizes="(min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
+                              className="object-contain transition-transform duration-700 group-hover/img:scale-[1.02]"
                             />
                           </div>
                         ))}
@@ -389,13 +393,13 @@ export default async function ProjectBriefPage({
                     )}
                   </div>
                 ) : section.image ? (
-                  <div className="aspect-video w-full overflow-hidden border border-white/10 group">
-                    <img
+                  <div className="relative aspect-video w-full overflow-hidden border border-white/10 group">
+                    <Image
                       src={section.image}
                       alt={section.title}
-                      loading="lazy"
-                      decoding="async"
-                      className="w-full h-full object-cover grayscale brightness-90 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700"
+                      fill
+                      sizes="(min-width: 768px) 66vw, 100vw"
+                      className="object-cover grayscale brightness-90 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700"
                       style={{ objectPosition: section.objectPosition ?? "50% 25%" }}
                     />
                   </div>

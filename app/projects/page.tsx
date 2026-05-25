@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowUpRight, Terminal } from "lucide-react";
 
 import { GlowyWavesHero } from "@/components/ui/glowy-waves-hero";
@@ -116,13 +117,15 @@ export default function ProjectsPage() {
               const Visual = (
                 <div className="w-full md:w-1/2 overflow-hidden glass-panel border border-white/10 transition-all duration-500 hover:border-primary-fixed-dim group-hover:border-primary-fixed-dim relative">
                   {project.heroImage ? (
-                    <img
-                      src={project.heroImage}
-                      alt={project.title}
-                      loading="lazy"
-                      decoding="async"
-                      className="w-full aspect-[16/9] object-cover [object-position:50%_25%] grayscale brightness-90 group-hover:grayscale-0 group-hover:brightness-100 group-hover:scale-105 transition-all duration-700"
-                    />
+                    <div className="relative w-full aspect-[16/9] overflow-hidden">
+                      <Image
+                        src={project.heroImage}
+                        alt={project.title}
+                        fill
+                        sizes="(min-width: 768px) 50vw, 100vw"
+                        className="object-cover [object-position:50%_25%] grayscale brightness-90 group-hover:grayscale-0 group-hover:brightness-100 group-hover:scale-105 transition-all duration-700"
+                      />
+                    </div>
                   ) : (
                     <div className="w-full aspect-[16/9] grid-bg flex items-center justify-center relative overflow-hidden">
                       <Icon

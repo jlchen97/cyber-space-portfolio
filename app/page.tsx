@@ -24,6 +24,7 @@ function LinkedInIcon({ className }: { className?: string }) {
 }
 import { Spotlight } from "@/components/ui/spotlight";
 import { SplineScene } from "@/components/ui/splite";
+import { LazySpline } from "@/components/ui/lazy-spline";
 import { SpecialText } from "@/components/ui/special-text";
 
 const RESUME_URL =
@@ -189,9 +190,13 @@ export default function Home() {
               can be shifted down (away from title, toward description)
               without breaking the watermark cover position. */}
           <div className="absolute inset-0 translate-y-12 md:translate-y-16">
-            <div className="absolute inset-0 pointer-events-none">
-              <SplineScene scene={SPLINE_BRAIN} className="w-full h-full" />
-            </div>
+            {/* Brain Spline is below the fold — gate it behind an
+                IntersectionObserver so the runtime + scene only load when
+                the user scrolls anywhere near it. */}
+            <LazySpline
+              scene={SPLINE_BRAIN}
+              className="absolute inset-0 pointer-events-none"
+            />
             <div
               aria-hidden
               className="absolute bottom-0 right-0 w-[160px] h-[44px] bg-surface z-10"

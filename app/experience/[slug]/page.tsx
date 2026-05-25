@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 
@@ -90,11 +91,14 @@ export default async function MissionBriefPage({
           {entry.heroImage ? (
             <>
               {/* Photo background — desaturated + darkened so the type stays legible */}
-              <img
+              <Image
                 src={entry.heroImage}
                 alt=""
                 aria-hidden
-                className="absolute inset-0 z-0 w-full h-full object-cover grayscale brightness-[0.35]"
+                fill
+                priority
+                sizes="100vw"
+                className="absolute inset-0 z-0 object-cover grayscale brightness-[0.35]"
               />
               <div
                 aria-hidden
@@ -248,13 +252,13 @@ export default async function MissionBriefPage({
             {entry.sections.map((section, sIdx) => (
               <article key={section.title} className="space-y-6">
                 {section.image && (
-                  <div className="aspect-video w-full overflow-hidden border border-white/10 group">
-                    <img
+                  <div className="relative aspect-video w-full overflow-hidden border border-white/10 group">
+                    <Image
                       src={section.image}
                       alt={section.title}
-                      loading="lazy"
-                      decoding="async"
-                      className="w-full h-full object-cover [object-position:50%_25%] grayscale brightness-90 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700"
+                      fill
+                      sizes="(min-width: 768px) 66vw, 100vw"
+                      className="object-cover [object-position:50%_25%] grayscale brightness-90 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700"
                     />
                   </div>
                 )}

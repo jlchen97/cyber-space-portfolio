@@ -127,8 +127,14 @@ export function Globe({
     if (!canvasRef.current) return;
     const canvas = canvasRef.current;
     let globe: ReturnType<typeof createGlobe> | null = null;
-    let animationId: number;
+    let animationId: number | null = null;
     let phi = 0;
+    // `visible` controls the rAF loop — when the canvas leaves the viewport
+    // we cancel the next frame entirely (rather than just no-op'ing inside
+    // animate()) so the GPU/CPU completely idles. Re-entering the viewport
+    // restarts the loop from where phi/theta left off.
+    let visible = true;
+    let intersectionObserver: IntersectionObserver | null = null;
 
     function init() {
       const width = canvas.offsetWidth;
@@ -167,6 +173,18 @@ export function Globe({
       });
 
       function animate() {
+        // Guard against the loop being re-entered after the globe was
+        // destroyed (e.g. fast remount during prop change).
+        if (!globe) {
+          animationId = null;
+          return;
+        }
+        // Stop scheduling frames entirely when the canvas is offscreen.
+        // Resumes via the IntersectionObserver callback below.
+        if (!visible) {
+          animationId = null;
+          return;
+        }
         if (!isPausedRef.current) {
           phi += speed;
           if (
@@ -213,6 +231,30 @@ export function Globe({
 
       animate();
       setTimeout(() => canvas && (canvas.style.opacity = "1"));
+
+      // Wire up visibility gating only once the globe is alive. rootMargin
+      // gives a small lead so the animation feels continuous when the user
+      // scrolls back into view rather than snapping in cold.
+      if (typeof IntersectionObserver !== "undefined") {
+        intersectionObserver = new IntersectionObserver(
+          (entries) => {
+            const nowVisible = entries[0]?.isIntersecting ?? true;
+            if (nowVisible && !visible) {
+              visible = true;
+              // Only restart if no frame is currently scheduled.
+              if (animationId === null) animate();
+            } else if (!nowVisible) {
+              visible = false;
+              if (animationId !== null) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+              }
+            }
+          },
+          { rootMargin: "100px 0px" },
+        );
+        intersectionObserver.observe(canvas);
+      }
     }
 
     if (canvas.offsetWidth > 0) {
@@ -228,7 +270,8 @@ export function Globe({
     }
 
     return () => {
-      if (animationId) cancelAnimationFrame(animationId);
+      if (animationId !== null) cancelAnimationFrame(animationId);
+      if (intersectionObserver) intersectionObserver.disconnect();
       if (globe) globe.destroy();
     };
   }, [
@@ -270,7 +313,6 @@ export function Globe({
           key={m.id}
           style={{
             position: "absolute",
-            // @ts-expect-error CSS Anchor Positioning
             positionAnchor: `--cobe-${m.id}`,
             bottom: "anchor(top)",
             left: "anchor(center)",
@@ -311,7 +353,6 @@ export function Globe({
             key={a.id}
             style={{
               position: "absolute",
-              // @ts-expect-error CSS Anchor Positioning
               positionAnchor: `--cobe-arc-${a.id}`,
               bottom: "anchor(top)",
               left: "anchor(center)",

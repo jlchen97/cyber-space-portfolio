@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 import { Globe } from "@/components/ui/cobe-globe";
 import { EXPERIENCE } from "@/lib/experience";
@@ -240,12 +241,12 @@ export default function ExperiencePage() {
               >
                 {entry.heroImage ? (
                   <div className="relative aspect-[16/9] overflow-hidden border-b border-white/10">
-                    <img
+                    <Image
                       src={entry.heroImage}
                       alt={entry.company}
-                      loading="lazy"
-                      decoding="async"
-                      className="w-full h-full object-cover grayscale brightness-90 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700 scale-100 group-hover:scale-105"
+                      fill
+                      sizes="(min-width: 768px) 50vw, 100vw"
+                      className="object-cover grayscale brightness-90 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700 scale-100 group-hover:scale-105"
                     />
                     <div
                       aria-hidden
