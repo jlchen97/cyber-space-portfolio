@@ -60,8 +60,15 @@ export function MobileMenu({ links, active }: MobileMenuProps) {
           role="dialog"
           aria-modal="true"
           aria-label="Site navigation"
-          className="fixed inset-0 z-[60] md:hidden bg-surface/95"
+          className="fixed inset-0 z-[60] md:hidden"
           style={{
+            // Use an explicit rgb() instead of Tailwind's bg-surface/95;
+            // the latter doesn't reliably emit a color-mix() value when
+            // --color-surface is defined as a hex literal in @theme, and
+            // we ended up with a transparent drawer in production. The
+            // page color (#131313) at 0.97 opacity gives a near-opaque
+            // panel that still blends with the page edges.
+            background: "rgba(19, 19, 19, 0.97)",
             backdropFilter: "blur(12px)",
             WebkitBackdropFilter: "blur(12px)",
           }}
