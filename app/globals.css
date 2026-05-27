@@ -108,11 +108,12 @@
   --text-label-caps--font-weight: 700;
 
   /* Spacing */
-  --spacing-section-gap: 10rem;
+  --spacing-section-gap: 2.5rem;
   --spacing-gutter: 1.5rem;
-  /* Mobile-narrowed gutter is applied via the media query below — Tailwind v4
-     reads --spacing-gutter at build time, so the variable in :root is what
-     `px-gutter` actually compiles to per viewport. */
+  /* Tailwind v4 emits `padding: var(--spacing-section-gap)` at the use site
+     for `py-section-gap`, so overriding the variable in a media query
+     genuinely changes the rendered padding per viewport. Default (mobile)
+     is 4rem (64px); desktop scales up to 10rem (160px) below. */
 
   /* Animations */
   --animate-spotlight: spotlight 2s ease 0.75s 1 forwards;
@@ -187,6 +188,14 @@ body {
     background: rgba(19, 19, 19, 0.85);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
+  }
+}
+
+/* Desktop bumps the section-gap spacing token back up to its original 10rem
+   value. Mobile-first default in @theme stays at 4rem. */
+@media (min-width: 768px) {
+  :root {
+    --spacing-section-gap: 10rem;
   }
 }
 

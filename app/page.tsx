@@ -47,9 +47,11 @@ export default function Home() {
       {/* Hero with Spline 3D scene — full-bleed so the robot has room to breathe. */}
       <section
         id="home"
-        className="anchor-offset relative min-h-[100dvh] w-full pt-24 pb-12 flex items-center"
+        className="anchor-offset relative min-h-[100dvh] w-full pt-24 pb-4 md:pb-12 flex items-center"
       >
-        <Card className="w-full h-[calc(100dvh-7rem)] min-h-[520px] md:min-h-[600px] bg-black/[0.96] relative overflow-hidden rounded-none border-y border-x-0 border-white/10">
+        {/* Card is content-sized on mobile (lets the stacked text + robot
+            both fit without clipping) and viewport-locked on desktop. */}
+        <Card className="w-full md:h-[calc(100dvh-7rem)] md:min-h-[600px] bg-black/[0.96] relative overflow-hidden rounded-none border-y border-x-0 border-white/10">
           {/* Directional spotlight anchored upper-left so the beam pools over
               the name area. Color softened to a less saturated green. */}
           <Spotlight
@@ -131,21 +133,38 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right: Spline robot. Hidden on mobile — the WebGL init
-                blocks LCP on phones and the robot ends up below the
-                text/CTAs in the stacked layout anyway. The spotlight +
-                gradients on the card give the left side enough visual
-                interest on its own. */}
-            <div className="hidden md:flex md:flex-[1.7] relative min-h-[300px]">
+            {/* Right: Spline robot — visible on every viewport. The brand
+                moment is worth the LCP cost; LazySpline isn't applied here
+                because the robot is above the fold on desktop and the
+                stacked mobile layout puts it below the text anyway.
+                The robot scene anchors the model at the top of the
+                canvas, so a taller container just adds empty space
+                below — we keep the mobile slot at 300px (same as
+                desktop) and let the robot read as a compact portrait
+                crop rather than fighting Spline's camera framing. The
+                coordinate + serial overlays are hidden on mobile so
+                they don't sit ON TOP of the robot at narrow widths,
+                and a small bottom-left cover hides the Spline badge. */}
+            <div className="md:flex-[1.7] relative min-h-[240px] md:min-h-[300px]">
               <SplineScene scene={SPLINE_SCENE} className="w-full h-full" />
-              <div className="absolute top-6 right-6 z-10 text-right space-y-2 text-on-surface-variant/40 font-label-caps text-[10px] tracking-[0.3em] pointer-events-none">
+              <div className="hidden md:block absolute top-6 right-6 z-10 text-right space-y-2 text-on-surface-variant/40 font-label-caps text-[10px] tracking-[0.3em] pointer-events-none">
                 <div>LAT 47.6062° N</div>
                 <div>LON 122.3321° W</div>
                 <div className="text-primary-fixed-dim">● LINK ESTABLISHED</div>
               </div>
-              <div className="absolute bottom-6 left-6 z-10 font-label-caps text-[10px] tracking-[0.3em] text-on-surface-variant/40 pointer-events-none">
+              <div className="hidden md:block absolute bottom-6 left-6 z-10 font-label-caps text-[10px] tracking-[0.3em] text-on-surface-variant/40 pointer-events-none">
                 UNIT_PRIMARY / REV.2026.05
               </div>
+              {/* Watermark cover — fades into the card background so it
+                  doesn't read as a hard rectangle. */}
+              <div
+                aria-hidden
+                className="absolute bottom-0 left-0 w-[140px] h-[48px] z-10 pointer-events-none"
+                style={{
+                  background:
+                    "radial-gradient(ellipse at bottom left, #000 50%, transparent 100%)",
+                }}
+              />
             </div>
           </div>
         </Card>
@@ -156,21 +175,36 @@ export default function Home() {
         id="professional"
         className="anchor-offset py-section-gap max-w-[1440px] mx-auto px-gutter"
       >
-        {/* Mobile: clean stacked layout — no Spline (the overlay math
-            calibrated for the desktop square is unreadable at phone widths,
-            and the brain is decorative anyway). */}
-        <div className="md:hidden space-y-5 mb-12 text-center">
-          <div className="font-label-caps text-[12px] tracking-[0.5em] text-on-surface-variant/40">
-            PROFESSIONAL_PROFILE
+        {/* Mobile: stacked layout — title above the brain, brain at full
+            viewport width, body below. No overlay, no overlap. Both text
+            blocks live in regular flow so they can size and wrap freely
+            without crashing through the brain in the middle. */}
+        <div className="md:hidden mb-8">
+          <div className="text-center space-y-3 mb-6">
+            <div className="font-label-caps text-[10px] tracking-[0.4em] text-on-surface-variant/40">
+              PROFESSIONAL_PROFILE
+            </div>
+            <h2 className="font-display text-2xl leading-tight tracking-tighter">
+              Engineering hardware systems that demand{" "}
+              <span className="text-primary-fixed-dim">
+                uncompromising rigor
+              </span>{" "}
+              and ship at industrial scale.
+            </h2>
           </div>
-          <h2 className="font-display text-3xl leading-tight tracking-tighter max-w-3xl mx-auto">
-            Engineering hardware systems that demand{" "}
-            <span className="text-primary-fixed-dim">
-              uncompromising rigor
-            </span>{" "}
-            and ship at industrial scale.
-          </h2>
-          <p className="text-body-md text-on-surface-variant/80 max-w-2xl mx-auto leading-relaxed">
+
+          <div className="relative w-full aspect-square">
+            <LazySpline
+              scene={SPLINE_BRAIN}
+              className="absolute inset-0 pointer-events-none"
+            />
+            <div
+              aria-hidden
+              className="absolute bottom-0 right-0 w-[160px] h-[44px] bg-surface z-10"
+            />
+          </div>
+
+          <p className="text-body-md text-on-surface-variant/80 max-w-2xl mx-auto leading-relaxed text-center mt-6">
             I&rsquo;m a mechanical and robotics engineer with a track record
             across aerospace, EV manufacturing, marine propulsion, and
             warehouse automation — from designing precision mechanical
@@ -181,15 +215,14 @@ export default function Home() {
 
         {/* Desktop: brain hero with text overlaid — title at top of canvas,
             body at bottom. The brain occupies the middle dead-space of the
-            square. Hidden on mobile in favor of the stacked layout above. */}
+            square. The overlay math is calibrated for this larger container
+            and would crash through the brain at mobile widths, hence the
+            split layout above. */}
         <div className="hidden md:block relative w-full aspect-square max-w-5xl mx-auto mb-16">
           {/* Brain canvas + watermark cover wrapped together so the brain
               can be shifted down (away from title, toward description)
               without breaking the watermark cover position. */}
           <div className="absolute inset-0 translate-y-16">
-            {/* Brain Spline is below the fold — gate it behind an
-                IntersectionObserver so the runtime + scene only load when
-                the user scrolls anywhere near it. */}
             <LazySpline
               scene={SPLINE_BRAIN}
               className="absolute inset-0 pointer-events-none"
@@ -226,35 +259,49 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Stat panels */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+        {/* Spec sheet — label/value rows with hairline dividers. Replaces
+            the earlier 2x2 card grid, which had FULL_STACK_HW overflowing
+            its card on mobile and felt visually heavy. The list reads
+            like a technical readout, fits the aerospace aesthetic, and
+            can never overflow because each row sizes to its content. */}
+        <dl className="max-w-md mx-auto border-y border-white/10">
           {[
-            { label: "DOMAIN", value: "ROBOTICS" },
+            { label: "DOMAIN", value: "ENG_LEADERSHIP" },
             { label: "CLEARANCE", value: "FULL_STACK_HW" },
             { label: "ALMA_MATER", value: "U-DUB" },
             { label: "STATUS", value: "ACTIVE", green: true },
-          ].map((stat) => (
+          ].map((stat, idx, arr) => (
             <div
               key={stat.label}
-              className="space-y-2 cyber-border p-5 glass-panel"
+              className={`flex items-baseline justify-between gap-6 py-3.5 ${
+                idx < arr.length - 1 ? "border-b border-white/5" : ""
+              }`}
             >
-              <div className="text-primary-fixed-dim font-label-caps text-[10px] tracking-[0.3em]">
+              <dt className="font-label-caps text-[10px] tracking-[0.3em] text-primary-fixed-dim shrink-0">
                 {stat.label}
-              </div>
-              <div
-                className={`font-display text-2xl ${stat.green ? "text-primary-fixed-dim" : ""}`}
+              </dt>
+              <dd
+                className={`font-display text-base md:text-lg tracking-tight text-right ${
+                  stat.green ? "text-primary-fixed-dim" : "text-on-surface"
+                }`}
               >
+                {stat.green && (
+                  <span
+                    aria-hidden
+                    className="inline-block w-1.5 h-1.5 rounded-full bg-primary-fixed-dim mr-2 align-middle shadow-[0_0_6px_rgba(0,230,57,0.7)]"
+                  />
+                )}
                 {stat.value}
-              </div>
+              </dd>
             </div>
           ))}
-        </div>
+        </dl>
       </section>
 
       {/* Journey — compact summary, links to /experience for the full Mission Log */}
       <section
         id="journey"
-        className="anchor-offset py-24 border-y border-white/5 bg-surface-container-low"
+        className="anchor-offset py-8 md:py-24 border-y border-white/5 bg-surface-container-low"
       >
         <div className="max-w-[1440px] mx-auto px-gutter">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-12">
@@ -298,7 +345,7 @@ export default function Home() {
       </section>
 
       {/* Stats / Specs */}
-      <section className="py-24 bg-surface-container-lowest border-y border-white/5">
+      <section className="py-8 md:py-24 bg-surface-container-lowest border-y border-white/5">
         <div className="max-w-[1440px] mx-auto px-gutter">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center md:text-left">
             {[
@@ -325,8 +372,12 @@ export default function Home() {
         id="contact"
         className="anchor-offset py-section-gap max-w-[1440px] mx-auto px-gutter"
       >
-        <div className="grid grid-cols-12 gap-12 items-end">
-          <div className="col-span-12 lg:col-span-7 space-y-8">
+        {/* 12-col grid only at lg+ where children actually split 7/5.
+            Below lg, use a 1-col grid so we don't reserve 11 gaps of
+            48px each (which alone overflows a mobile viewport and
+            triggers horizontal scroll across the entire page). */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-end">
+          <div className="col-span-1 lg:col-span-7 space-y-8">
             <div className="font-label-caps text-[12px] tracking-[0.5em] text-on-surface-variant/40">
               SIGNAL_CHANNELS
             </div>
@@ -339,7 +390,7 @@ export default function Home() {
               engineering programs.
             </p>
           </div>
-          <div className="col-span-12 lg:col-span-5 space-y-4">
+          <div className="col-span-1 lg:col-span-5 space-y-4">
             <a
               href={LINKEDIN_URL}
               target="_blank"
@@ -391,7 +442,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-surface border-t border-white/5 py-16">
+      <footer className="bg-surface border-t border-white/5 py-10 md:py-16">
         <div className="flex flex-col md:flex-row justify-between items-center max-w-[1440px] mx-auto px-gutter gap-8">
           <div className="flex flex-col gap-3">
             <div className="font-display text-body-lg text-on-surface uppercase tracking-widest flex items-center gap-2">
@@ -404,19 +455,19 @@ export default function Home() {
           </div>
           <div className="flex gap-10">
             <Link
-              className="font-label-caps text-[12px] tracking-[0.2em] text-on-tertiary-container hover:text-on-surface transition-colors"
+              className="font-label-caps text-[12px] tracking-[0.2em] text-on-tertiary-container hover:text-on-surface transition-colors py-2 -my-2"
               href="#home"
             >
               Home
             </Link>
             <Link
-              className="font-label-caps text-[12px] tracking-[0.2em] text-on-tertiary-container hover:text-on-surface transition-colors"
+              className="font-label-caps text-[12px] tracking-[0.2em] text-on-tertiary-container hover:text-on-surface transition-colors py-2 -my-2"
               href="/experience"
             >
               Experience
             </Link>
             <Link
-              className="font-label-caps text-[12px] tracking-[0.2em] text-on-tertiary-container hover:text-on-surface transition-colors"
+              className="font-label-caps text-[12px] tracking-[0.2em] text-on-tertiary-container hover:text-on-surface transition-colors py-2 -my-2"
               href="/projects"
             >
               Projects

@@ -147,18 +147,24 @@ export default function ProjectsPage() {
                       {project.description}
                     </p>
                   </div>
+                  {/* On mobile, stack tags row + OPEN DOSSIER chip so the
+                      chip doesn't end up alone on its own wrapped line
+                      between half-filled tag rows. On sm+ they share a
+                      single wrapping row like before. */}
                   <div
-                    className={`flex flex-wrap items-center gap-2 ${flipped ? "md:justify-end" : ""}`}
+                    className={`flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 sm:gap-2 ${flipped ? "sm:justify-end" : ""}`}
                   >
-                    {project.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="px-3 py-1 border border-white/10 font-label-caps text-[10px] tracking-[0.3em] text-on-surface-variant/70"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                    <span className="inline-flex items-center gap-1 px-3 py-1 border border-primary-fixed-dim/40 font-label-caps text-[10px] tracking-[0.3em] text-primary-fixed-dim group-hover:bg-primary-fixed-dim group-hover:text-on-primary transition-colors">
+                    <div className={`flex flex-wrap items-center gap-2 ${flipped ? "sm:justify-end" : ""}`}>
+                      {project.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="px-3 py-1 border border-white/10 font-label-caps text-[10px] tracking-[0.3em] text-on-surface-variant/70"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <span className="self-start sm:self-auto inline-flex items-center gap-1 px-3 py-1 border border-primary-fixed-dim/40 font-label-caps text-[10px] tracking-[0.3em] text-primary-fixed-dim group-hover:bg-primary-fixed-dim group-hover:text-on-primary transition-colors">
                       OPEN DOSSIER
                       <ArrowUpRight className="w-3 h-3" />
                     </span>
@@ -218,19 +224,19 @@ export default function ProjectsPage() {
           </div>
           <div className="flex gap-10">
             <Link
-              className="font-label-caps text-[12px] tracking-[0.2em] text-on-tertiary-container hover:text-on-surface transition-colors"
+              className="font-label-caps text-[12px] tracking-[0.2em] text-on-tertiary-container hover:text-on-surface transition-colors py-2 -my-2"
               href="/#home"
             >
               Home
             </Link>
             <Link
-              className="font-label-caps text-[12px] tracking-[0.2em] text-on-tertiary-container hover:text-on-surface transition-colors"
+              className="font-label-caps text-[12px] tracking-[0.2em] text-on-tertiary-container hover:text-on-surface transition-colors py-2 -my-2"
               href="/experience"
             >
               Experience
             </Link>
             <Link
-              className="font-label-caps text-[12px] tracking-[0.2em] text-on-tertiary-container hover:text-on-surface transition-colors"
+              className="font-label-caps text-[12px] tracking-[0.2em] text-on-tertiary-container hover:text-on-surface transition-colors py-2 -my-2"
               href="/#contact"
             >
               Contact

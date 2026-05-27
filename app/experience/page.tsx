@@ -354,19 +354,19 @@ export default function ExperiencePage() {
           </div>
           <div className="flex gap-10">
             <Link
-              className="font-label-caps text-[12px] tracking-[0.2em] text-on-tertiary-container hover:text-on-surface transition-colors"
+              className="font-label-caps text-[12px] tracking-[0.2em] text-on-tertiary-container hover:text-on-surface transition-colors py-2 -my-2"
               href="/#home"
             >
               Home
             </Link>
             <Link
-              className="font-label-caps text-[12px] tracking-[0.2em] text-on-tertiary-container hover:text-on-surface transition-colors"
+              className="font-label-caps text-[12px] tracking-[0.2em] text-on-tertiary-container hover:text-on-surface transition-colors py-2 -my-2"
               href="/projects"
             >
               Projects
             </Link>
             <Link
-              className="font-label-caps text-[12px] tracking-[0.2em] text-on-tertiary-container hover:text-on-surface transition-colors"
+              className="font-label-caps text-[12px] tracking-[0.2em] text-on-tertiary-container hover:text-on-surface transition-colors py-2 -my-2"
               href="/#contact"
             >
               Contact
