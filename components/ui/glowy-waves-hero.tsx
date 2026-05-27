@@ -67,8 +67,12 @@ export function GlowyWavesHero() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return undefined;
 
-    let animationId: number;
+    let animationId: number | null = null;
     let time = 0;
+    // `visible` controls whether the rAF loop is running. We pause entirely
+    // when the canvas scrolls off — keeps battery + GPU idle on mobile and
+    // matches the pattern used by cobe-globe and lazy-spline.
+    let visible = true;
 
     const computeThemeColors = () => {
       const rootStyles = getComputedStyle(document.documentElement);
@@ -245,6 +249,13 @@ export function GlowyWavesHero() {
     };
 
     const animate = () => {
+      // Bail out cleanly when offscreen so we stop scheduling frames.
+      // IntersectionObserver below will restart the loop on re-entry.
+      if (!visible) {
+        animationId = null;
+        return;
+      }
+
       time += 1;
 
       mouseRef.current.x +=
@@ -269,11 +280,39 @@ export function GlowyWavesHero() {
 
     animationId = window.requestAnimationFrame(animate);
 
+    // Pause the rAF loop entirely when the canvas leaves the viewport.
+    // Restart it when the canvas comes back. rootMargin gives a small lead
+    // so the animation feels continuous on scroll-back rather than snapping
+    // in cold.
+    let visibilityObserver: IntersectionObserver | null = null;
+    if (typeof IntersectionObserver !== "undefined") {
+      visibilityObserver = new IntersectionObserver(
+        (entries) => {
+          const nowVisible = entries[0]?.isIntersecting ?? true;
+          if (nowVisible && !visible) {
+            visible = true;
+            if (animationId === null) {
+              animationId = window.requestAnimationFrame(animate);
+            }
+          } else if (!nowVisible) {
+            visible = false;
+            if (animationId !== null) {
+              cancelAnimationFrame(animationId);
+              animationId = null;
+            }
+          }
+        },
+        { rootMargin: "200px 0px" },
+      );
+      visibilityObserver.observe(canvas);
+    }
+
     return () => {
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseleave", handleMouseLeave);
-      cancelAnimationFrame(animationId);
+      if (animationId !== null) cancelAnimationFrame(animationId);
+      if (visibilityObserver) visibilityObserver.disconnect();
       observer.disconnect();
     };
   }, []);

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Fragment } from "react";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 
+import { SiteNav } from "@/components/ui/site-nav";
 import {
   PROJECTS,
   getProjectBySlug,
@@ -72,14 +73,6 @@ function inferGroup(section: ProjectSection): SectionGroup {
   return "my-work";
 }
 
-const NAV_LINKS = [
-  { href: "/#home", label: "Home" },
-  { href: "/#professional", label: "Professional" },
-  { href: "/experience", label: "Experience" },
-  { href: "/projects", label: "Projects", active: true },
-  { href: "/#contact", label: "Contact" },
-];
-
 export function generateStaticParams() {
   return PROJECTS.map((p) => ({ slug: p.slug }));
 }
@@ -113,33 +106,7 @@ export default async function ProjectBriefPage({
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/10">
-        <div className="grid grid-cols-3 items-center max-w-[1440px] mx-auto px-gutter py-6 w-full">
-          <Link
-            href="/"
-            className="font-display text-headline-md tracking-tighter text-on-surface flex items-center gap-2 justify-self-start"
-          >
-            Jian Chen
-            <span className="w-1.5 h-1.5 bg-primary-fixed-dim rounded-full shadow-[0_0_8px_rgba(0,230,57,0.8)] animate-blink" />
-          </Link>
-          <div className="hidden md:flex gap-10 items-center justify-center">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={
-                  link.active
-                    ? "text-primary-fixed-dim border-b border-primary-fixed-dim font-label-caps text-[12px] tracking-[0.3em] transition-all duration-300"
-                    : "text-on-surface-variant/60 font-label-caps text-[12px] tracking-[0.3em] hover:text-primary-fixed-dim transition-all duration-300"
-                }
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
-          <div aria-hidden />
-        </div>
-      </nav>
+      <SiteNav scope="page" active="projects" />
 
       <main className="pt-32">
         {/* Back link */}
@@ -154,7 +121,7 @@ export default async function ProjectBriefPage({
         </div>
 
         {/* Hero */}
-        <section className="relative min-h-[640px] md:min-h-[720px] flex flex-col justify-end max-w-[1440px] mx-auto px-gutter pb-16 md:pb-20 overflow-hidden">
+        <section className="relative min-h-[60dvh] md:min-h-[720px] flex flex-col justify-end max-w-[1440px] mx-auto px-gutter pb-16 md:pb-20 overflow-hidden">
           {project.heroImage ? (
             <>
               <Image

@@ -110,6 +110,9 @@
   /* Spacing */
   --spacing-section-gap: 10rem;
   --spacing-gutter: 1.5rem;
+  /* Mobile-narrowed gutter is applied via the media query below — Tailwind v4
+     reads --spacing-gutter at build time, so the variable in :root is what
+     `px-gutter` actually compiles to per viewport. */
 
   /* Animations */
   --animate-spotlight: spotlight 2s ease 0.75s 1 forwards;
@@ -142,6 +145,21 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Honor user motion preferences — vestibular-sensitive users get unwanted
+   motion from both smooth-scroll and the blink/spotlight keyframes. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
 body {
   background: var(--color-background);
   color: var(--color-on-surface);
@@ -158,6 +176,18 @@ body {
   background: rgba(255, 255, 255, 0.02);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+}
+
+/* On mobile, backdrop-filter: blur(20px) on the fixed nav recomposites every
+   scroll frame and causes visible jank on older iPhones. Use a smaller blur
+   plus a more opaque background color so the nav still reads as glassy
+   without making the GPU sweat. */
+@media (max-width: 767px) {
+  .glass-panel {
+    background: rgba(19, 19, 19, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
 }
 
 .grid-bg {

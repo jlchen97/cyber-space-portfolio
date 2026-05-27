@@ -2,15 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { Globe } from "@/components/ui/cobe-globe";
+import { SiteNav } from "@/components/ui/site-nav";
 import { EXPERIENCE } from "@/lib/experience";
-
-const NAV_LINKS = [
-  { href: "/#home", label: "Home" },
-  { href: "/#professional", label: "Professional" },
-  { href: "/experience", label: "Experience", active: true },
-  { href: "/projects", label: "Projects" },
-  { href: "/#contact", label: "Contact" },
-];
 
 // Color-code by company so the globe reads at a glance. Each company gets a
 // distinct hue; Seattle stays cyber-green as the multi-role home base.
@@ -111,33 +104,7 @@ const GLOBE_LEGEND = [
 export default function ExperiencePage() {
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/10">
-        <div className="grid grid-cols-3 items-center max-w-[1440px] mx-auto px-gutter py-6 w-full">
-          <Link
-            href="/"
-            className="font-display text-headline-md tracking-tighter text-on-surface flex items-center gap-2 justify-self-start"
-          >
-            Jian Chen
-            <span className="w-1.5 h-1.5 bg-primary-fixed-dim rounded-full shadow-[0_0_8px_rgba(0,230,57,0.8)] animate-blink" />
-          </Link>
-          <div className="hidden md:flex gap-10 items-center justify-center">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={
-                  link.active
-                    ? "text-primary-fixed-dim border-b border-primary-fixed-dim font-label-caps text-[12px] tracking-[0.3em] transition-all duration-300"
-                    : "text-on-surface-variant/60 font-label-caps text-[12px] tracking-[0.3em] hover:text-primary-fixed-dim transition-all duration-300"
-                }
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
-          <div aria-hidden />
-        </div>
-      </nav>
+      <SiteNav scope="page" active="experience" />
 
       <main className="pt-32 pb-20 max-w-[1440px] mx-auto px-gutter">
         {/* Hero — Mission Log header + Cobe deployment globe */}
@@ -213,7 +180,7 @@ export default function ExperiencePage() {
                       boxShadow: `0 0 8px ${item.color}80`,
                     }}
                   />
-                  <span className="font-label-caps text-[11px] tracking-[0.2em] text-on-surface w-[120px] shrink-0">
+                  <span className="font-label-caps text-[11px] tracking-[0.15em] sm:tracking-[0.2em] text-on-surface min-w-[100px] sm:min-w-[120px] shrink-0 whitespace-nowrap">
                     {item.label}
                   </span>
                   <span className="text-on-surface-variant/60 text-[12px] truncate">
@@ -267,7 +234,7 @@ export default function ExperiencePage() {
                     />
                   </div>
                 )}
-                <div className="p-8 flex flex-col gap-6 flex-1">
+                <div className="p-6 md:p-8 flex flex-col gap-6 flex-1">
                 <div className="flex justify-between items-start gap-4">
                   <div>
                     <span className="font-label-caps text-[10px] tracking-[0.3em] text-on-tertiary-container mb-2 block uppercase">

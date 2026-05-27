@@ -22,6 +22,7 @@ function LinkedInIcon({ className }: { className?: string }) {
     </svg>
   );
 }
+import { SiteNav } from "@/components/ui/site-nav";
 import { Spotlight } from "@/components/ui/spotlight";
 import { SplineScene } from "@/components/ui/splite";
 import { LazySpline } from "@/components/ui/lazy-spline";
@@ -33,14 +34,6 @@ const LINKEDIN_URL = "https://www.linkedin.com/in/jianlchen/";
 const SPLINE_SCENE = "https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode";
 const SPLINE_BRAIN = "https://prod.spline.design/oCgPgJzTzCupWGW2/scene.splinecode";
 
-const NAV_LINKS = [
-  { href: "#home", label: "Home" },
-  { href: "#professional", label: "Professional" },
-  { href: "/experience", label: "Experience" },
-  { href: "/projects", label: "Projects" },
-  { href: "#contact", label: "Contact" },
-];
-
 const JOURNEY_FEATURED = ["Level Up Live", "Amazon Robotics", "Tesla"];
 const JOURNEY = JOURNEY_FEATURED.map(
   (name) => EXPERIENCE.find((e) => e.company === name)!,
@@ -49,37 +42,14 @@ const JOURNEY = JOURNEY_FEATURED.map(
 export default function Home() {
   return (
     <>
-      {/* Top Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/10">
-        <div className="grid grid-cols-3 items-center max-w-[1440px] mx-auto px-gutter py-6 w-full">
-          <Link
-            href="#home"
-            className="font-display text-headline-md tracking-tighter text-on-surface flex items-center gap-2 justify-self-start"
-          >
-            Jian Chen
-            <span className="w-1.5 h-1.5 bg-primary-fixed-dim rounded-full shadow-[0_0_8px_rgba(0,230,57,0.8)] animate-blink" />
-          </Link>
-          <div className="hidden md:flex gap-10 items-center justify-center">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-on-surface-variant/60 font-label-caps text-[12px] tracking-[0.3em] hover:text-primary-fixed-dim glow-sm transition-all duration-300"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
-          <div aria-hidden />
-        </div>
-      </nav>
+      <SiteNav scope="home" active="home" />
 
       {/* Hero with Spline 3D scene — full-bleed so the robot has room to breathe. */}
       <section
         id="home"
-        className="anchor-offset relative min-h-screen w-full pt-24 pb-12 flex items-center"
+        className="anchor-offset relative min-h-[100dvh] w-full pt-24 pb-12 flex items-center"
       >
-        <Card className="w-full h-[calc(100vh-7rem)] min-h-[600px] bg-black/[0.96] relative overflow-hidden rounded-none border-y border-x-0 border-white/10">
+        <Card className="w-full h-[calc(100dvh-7rem)] min-h-[520px] md:min-h-[600px] bg-black/[0.96] relative overflow-hidden rounded-none border-y border-x-0 border-white/10">
           {/* Directional spotlight anchored upper-left so the beam pools over
               the name area. Color softened to a less saturated green. */}
           <Spotlight
@@ -161,9 +131,12 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right: Spline scene — gets a wider flex ratio so the robot
-                doesn't crash into the right edge. */}
-            <div className="md:flex-[1.7] relative min-h-[300px]">
+            {/* Right: Spline robot. Hidden on mobile — the WebGL init
+                blocks LCP on phones and the robot ends up below the
+                text/CTAs in the stacked layout anyway. The spotlight +
+                gradients on the card give the left side enough visual
+                interest on its own. */}
+            <div className="hidden md:flex md:flex-[1.7] relative min-h-[300px]">
               <SplineScene scene={SPLINE_SCENE} className="w-full h-full" />
               <div className="absolute top-6 right-6 z-10 text-right space-y-2 text-on-surface-variant/40 font-label-caps text-[10px] tracking-[0.3em] pointer-events-none">
                 <div>LAT 47.6062° N</div>
@@ -183,13 +156,37 @@ export default function Home() {
         id="professional"
         className="anchor-offset py-section-gap max-w-[1440px] mx-auto px-gutter"
       >
-        {/* Brain hero with text overlaid — title at top of canvas, body at
-            bottom. The brain occupies the middle dead-space of the square. */}
-        <div className="relative w-full aspect-square max-w-5xl mx-auto mb-12 md:mb-16">
+        {/* Mobile: clean stacked layout — no Spline (the overlay math
+            calibrated for the desktop square is unreadable at phone widths,
+            and the brain is decorative anyway). */}
+        <div className="md:hidden space-y-5 mb-12 text-center">
+          <div className="font-label-caps text-[12px] tracking-[0.5em] text-on-surface-variant/40">
+            PROFESSIONAL_PROFILE
+          </div>
+          <h2 className="font-display text-3xl leading-tight tracking-tighter max-w-3xl mx-auto">
+            Engineering hardware systems that demand{" "}
+            <span className="text-primary-fixed-dim">
+              uncompromising rigor
+            </span>{" "}
+            and ship at industrial scale.
+          </h2>
+          <p className="text-body-md text-on-surface-variant/80 max-w-2xl mx-auto leading-relaxed">
+            I&rsquo;m a mechanical and robotics engineer with a track record
+            across aerospace, EV manufacturing, marine propulsion, and
+            warehouse automation — from designing precision mechanical
+            assemblies to managing cross-functional engineering programs at
+            fleet scale.
+          </p>
+        </div>
+
+        {/* Desktop: brain hero with text overlaid — title at top of canvas,
+            body at bottom. The brain occupies the middle dead-space of the
+            square. Hidden on mobile in favor of the stacked layout above. */}
+        <div className="hidden md:block relative w-full aspect-square max-w-5xl mx-auto mb-16">
           {/* Brain canvas + watermark cover wrapped together so the brain
               can be shifted down (away from title, toward description)
               without breaking the watermark cover position. */}
-          <div className="absolute inset-0 translate-y-12 md:translate-y-16">
+          <div className="absolute inset-0 translate-y-16">
             {/* Brain Spline is below the fold — gate it behind an
                 IntersectionObserver so the runtime + scene only load when
                 the user scrolls anywhere near it. */}
@@ -204,11 +201,11 @@ export default function Home() {
           </div>
 
           {/* Title overlay — top of the canvas */}
-          <div className="absolute inset-x-0 top-0 text-center px-6 md:px-12 pt-6 md:pt-12 z-10 space-y-4 -translate-y-12 md:-translate-y-16">
+          <div className="absolute inset-x-0 top-0 text-center px-12 pt-12 z-10 space-y-4 -translate-y-16">
             <div className="font-label-caps text-[12px] tracking-[0.5em] text-on-surface-variant/40">
               PROFESSIONAL_PROFILE
             </div>
-            <h2 className="font-display text-3xl md:text-5xl lg:text-6xl leading-tight tracking-tighter max-w-3xl mx-auto">
+            <h2 className="font-display text-5xl lg:text-6xl leading-tight tracking-tighter max-w-3xl mx-auto">
               Engineering hardware systems that demand{" "}
               <span className="text-primary-fixed-dim">
                 uncompromising rigor
@@ -218,8 +215,8 @@ export default function Home() {
           </div>
 
           {/* Body overlay — bottom of the canvas */}
-          <div className="absolute inset-x-0 bottom-0 text-center px-6 md:px-12 pb-8 md:pb-16 z-10">
-            <p className="text-body-md md:text-body-lg text-on-surface-variant/80 max-w-2xl mx-auto leading-relaxed">
+          <div className="absolute inset-x-0 bottom-0 text-center px-12 pb-16 z-10">
+            <p className="text-body-lg text-on-surface-variant/80 max-w-2xl mx-auto leading-relaxed">
               I&rsquo;m a mechanical and robotics engineer with a track record
               across aerospace, EV manufacturing, marine propulsion, and
               warehouse automation — from designing precision mechanical

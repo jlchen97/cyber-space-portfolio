@@ -3,15 +3,8 @@ import Image from "next/image";
 import { ArrowUpRight, Terminal } from "lucide-react";
 
 import { GlowyWavesHero } from "@/components/ui/glowy-waves-hero";
+import { SiteNav } from "@/components/ui/site-nav";
 import { PROJECTS } from "@/lib/projects";
-
-const NAV_LINKS = [
-  { href: "/#home", label: "Home" },
-  { href: "/#professional", label: "Professional" },
-  { href: "/experience", label: "Experience" },
-  { href: "/projects", label: "Projects", active: true },
-  { href: "/#contact", label: "Contact" },
-];
 
 const TELEMETRY = [
   { value: "08", label: "Projects Logged" },
@@ -29,33 +22,7 @@ const COMMAND_LOG = [
 export default function ProjectsPage() {
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 glass-panel border-b border-white/10">
-        <div className="grid grid-cols-3 items-center max-w-[1440px] mx-auto px-gutter py-6 w-full">
-          <Link
-            href="/"
-            className="font-display text-headline-md tracking-tighter text-on-surface flex items-center gap-2 justify-self-start"
-          >
-            Jian Chen
-            <span className="w-1.5 h-1.5 bg-primary-fixed-dim rounded-full shadow-[0_0_8px_rgba(0,230,57,0.8)] animate-blink" />
-          </Link>
-          <div className="hidden md:flex gap-10 items-center justify-center">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={
-                  link.active
-                    ? "text-primary-fixed-dim border-b border-primary-fixed-dim font-label-caps text-[12px] tracking-[0.3em] transition-all duration-300"
-                    : "text-on-surface-variant/60 font-label-caps text-[12px] tracking-[0.3em] hover:text-primary-fixed-dim transition-all duration-300"
-                }
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
-          <div aria-hidden />
-        </div>
-      </nav>
+      <SiteNav scope="page" active="projects" />
 
       <GlowyWavesHero />
 
@@ -108,7 +75,7 @@ export default function ProjectsPage() {
           {/* Dossier list — hidden entries (e.g. individual hyperloop comp pages
               accessed only from inside the combined SpaceX brief) are filtered
               out here but their detail routes still resolve. */}
-          <div className="lg:w-3/4 space-y-24 md:space-y-32">
+          <div className="lg:w-3/4 space-y-16 md:space-y-24 lg:space-y-32">
             {PROJECTS.filter((p) => !p.hidden).map((project, idx) => {
               const Icon = project.icon;
               const flipped = idx % 2 === 1;
